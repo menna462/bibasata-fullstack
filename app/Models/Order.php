@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Order extends Model
+{
+    use HasFactory;
+    protected $fillable = [
+        'user_id',
+        'product_id',
+        'bundle_id',
+        'account_id',
+        'duration_in_days',
+        'order_date',
+        'start_date',
+        'end_date',
+        'is_paid',
+    ];
+        protected $casts = [
+        'order_date' => 'datetime',
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'is_paid' => 'boolean',
+    ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function bundle()
+    {
+        return $this->belongsTo(Bundle::class);
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+}

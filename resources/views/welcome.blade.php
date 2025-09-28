@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+<html lang="en">
+{{-- {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }} --}}
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('frontend/style.css') }}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
@@ -35,7 +37,7 @@
             </div>
 
             {{-- Desktop Navigation --}}
-            <div class="right-nav d-none d-lg-block">
+            <div class="right-nav d-none d-lg-block  {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}">
                 <ul>
                     <li><a href="{{ url('/') }}">{{ __('language.Home') }}</a></li>
                     <li><a href="{{ url('/shop') }}">{{ __('language.Shop') }}</a></li>
@@ -56,6 +58,7 @@
             {{-- Desktop Icons & Language Switcher --}}
             <div class="left-nav d-none d-lg-block">
                 <ul class="icons">
+                    {{-- أيقونة حساب المستخدم (تظل كما هي) --}}
                     <li>
                         @auth
                             <a href="{{ route('profile.show') }}"><i class="fa-regular fa-user"></i></a>
@@ -64,16 +67,19 @@
                         @endauth
                     </li>
 
+                    {{-- أيقونة البحث --}}
                     <li>
                         <a href="#" onclick="toggleSearch()" class="search-toggle-btn">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </a>
                     </li>
 
+                    {{-- أيقونة المفضلة (العداد يظهر فقط للمسجلين) --}}
                     <li>
                         <a href="{{ route('favorites') }}" class="icon-link position-relative">
                             <i class="fa-regular fa-heart fa-lg" aria-hidden="true"></i>
                             @auth
+                                {{-- العداد للمسجلين فقط: يعتمد على بيانات قاعدة البيانات --}}
                                 @php $favoritesCount = Auth::user()->allFavorites()->count(); @endphp
                                 @if ($favoritesCount > 0)
                                     <span class="badge">{{ $favoritesCount }}</span>
@@ -82,21 +88,22 @@
                         </a>
                     </li>
 
+                    {{-- 🛒 أيقونة السلة (العداد يظهر للجميع: تم حذف @auth) 🛒 --}}
                     <li>
                         <a href="{{ route('cart') }}" class="icon-link position-relative">
                             <i class="fa-solid fa-cart-shopping"></i>
-                            @auth
-                                @php
-                                    $cart = session()->get('cart', []);
-                                    $cartCount = array_sum(array_column($cart, 'quantity'));
-                                @endphp
-                                @if ($cartCount > 0)
-                                    <span class="badge">{{ $cartCount }}</span>
-                                @endif
-                            @endauth
+                            {{-- منطق حساب العداد من الـ Session، يعمل للمسجلين والزوار --}}
+                            @php
+                                $cart = session()->get('cart', []);
+                                $cartCount = array_sum(array_column($cart, 'quantity'));
+                            @endphp
+                            @if ($cartCount > 0)
+                                <span class="badge">{{ $cartCount }}</span>
+                            @endif
                         </a>
                     </li>
 
+                    {{-- قسم تبديل اللغة --}}
                     @php
                         $currentLocale = app()->getLocale();
                         $currentFlagUrl = match ($currentLocale) {
@@ -143,7 +150,7 @@
             </div>
 
             {{-- Mobile Dropdown Menu --}}
-            <div class="dropdown-menu-mobile" id="mobile-menu">
+            <div class="dropdown-menu-mobile  {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}" id="mobile-menu">
                 <ul>
                     <li><a href="./index.html">Home</a></li>
                     <li><a href="./category.html">Shop</a></li>
@@ -193,74 +200,59 @@
         </div>
     </header>
 
-    <!-- swiper -->
-    @include('include.swiper')
-
-    <!--  three -->
-    @include('include.animation')
-    <!-- category -->
-    @include('include.categoryfront')
-
-    <!-- card -->
-    @include('include.carthome')
-
-    <!-- bundle -->
-    @include('include.bundel')
-
-
     @yield('content')
 
     <!-- footer -->
     <footer>
-    <div class="footer-container">
-        {{-- Social Media --}}
-        <div class="footer-section social-media">
-            <img src="{{ asset('frontend/image/7.png') }}" alt="Bibasata Logo" class="logo" />
-            <h3>{{ __('footer.Social_Media') }}</h3>
-            <div class="social-icons">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
+        <div class="footer-container">
+            {{-- Social Media --}}
+            <div class="footer-section social-media">
+                <img src="{{ asset('frontend/image/7.png') }}" alt="Bibasata Logo" class="logo" />
+                <h3>{{ __('footer.Social_Media') }}</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            {{-- Links --}}
+            <div class="footer-section links">
+                <h3>{{ __('footer.Links') }}</h3>
+                <ul>
+                    <li><a href="{{ url('/') }}">{{ __('language.Home') }}</a></li>
+                    <li><a href="{{ url('/shop') }}">{{ __('language.Shop') }}</a></li>
+                    <li><a href="{{ url('/about') }}">{{ __('language.About') }}</a></li>
+                    <li><a href="{{ url('/contact') }}">{{ __('language.Contact') }}</a></li>
+                </ul>
+            </div>
+
+            {{-- Popular Products --}}
+            <div class="footer-section popular-products">
+                <h3>{{ __('language.Popular_Products') }}</h3>
+                <ul>
+                    <li><a href="#">Adobe</a></li>
+                    <li><a href="#">ChatGPT</a></li>
+                    <li><a href="#">Freebix</a></li>
+                </ul>
+            </div>
+
+            {{-- Newsletter --}}
+            <div class="footer-section newsletter">
+                <h3>{{ __('language.Newsletter') }}</h3>
+                <form>
+                    <input type="email" placeholder="{{ __('language.Email_Placeholder') }}" />
+                    <button type="submit">{{ __('language.Subscribe') }}</button>
+                </form>
             </div>
         </div>
 
-        {{-- Links --}}
-        <div class="footer-section links">
-            <h3>{{ __('footer.Links') }}</h3>
-            <ul>
-                <li><a href="{{ url('/') }}">{{ __('language.Home') }}</a></li>
-                <li><a href="{{ url('/shop') }}">{{ __('language.Shop') }}</a></li>
-                <li><a href="{{ url('/about') }}">{{ __('language.About') }}</a></li>
-                <li><a href="{{ url('/contact') }}">{{ __('language.Contact') }}</a></li>
-            </ul>
+        <div class="footer-bottom">
+            <div class="copyright">
+                <p>&copy; 2025 Bibasata. {{ __('footer.All_Rights') }}</p>
+            </div>
         </div>
-
-        {{-- Popular Products --}}
-        <div class="footer-section popular-products">
-            <h3>{{ __('language.Popular_Products') }}</h3>
-            <ul>
-                <li><a href="#">Adobe</a></li>
-                <li><a href="#">ChatGPT</a></li>
-                <li><a href="#">Freebix</a></li>
-            </ul>
-        </div>
-
-        {{-- Newsletter --}}
-        <div class="footer-section newsletter">
-            <h3>{{ __('language.Newsletter') }}</h3>
-            <form>
-                <input type="email" placeholder="{{ __('language.Email_Placeholder') }}" />
-                <button type="submit">{{ __('language.Subscribe') }}</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="footer-bottom">
-        <div class="copyright">
-            <p>&copy; 2025 Bibasata. {{ __('footer.All_Rights') }}</p>
-        </div>
-    </div>
-</footer>
+    </footer>
 
     <div class="payment-logos">
         <img src="{{ asset('frontend/image/11.jpg') }}" alt="Etisalat" />
@@ -271,6 +263,9 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
     <script src="{{ asset('frontend/main.js') }}"></script>
+<script>
+
+</script>
 
 </body>
 

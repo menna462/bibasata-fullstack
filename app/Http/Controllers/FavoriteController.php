@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Product; // استدعي موديل Product
 use App\Models\Bundle;  // استدعي موديل Bundle
 use App\Models\Favorite; // استدعي موديل Favorite (الـ Pivot Model)
+use Carbon\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class FavoriteController extends Controller
 {
@@ -65,7 +68,7 @@ class FavoriteController extends Controller
         }
     }
 
-    public function index()
+    public function index(): Factory|RedirectResponse|View
     {
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'Please log in to view your favorites.');

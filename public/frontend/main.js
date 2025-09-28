@@ -200,36 +200,65 @@ function showContent(contentId, event) {
 }
 
 // ===== Favorites toggle =====
-document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("favorite-icon")) {
-        const icon = e.target;
-        const favoritableId = icon.dataset.favoritableId;
-        const favoritableType = icon.dataset.favoritableType;
-        const csrfToken = document
-            .querySelector('meta[name="csrf-token"]')
-            .getAttribute("content");
-
-        fetch(`/toggle-favorite`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": csrfToken,
-            },
-            body: JSON.stringify({
-                favoritable_id: favoritableId,
-                favoritable_type: favoritableType,
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.status === "added") {
-                    icon.classList.remove("far");
-                    icon.classList.add("fas", "favorited");
-                } else if (data.status === "removed") {
-                    icon.classList.remove("fas", "favorited");
-                    icon.classList.add("far");
-                }
-            })
-            .catch((error) => console.error("Error:", error));
-    }
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".favorite-icon").forEach(function (icon) {
+        icon.addEventListener("click", function () {
+            toggleFavorite(this);
+        });
+    });
 });
+
+function toggleFavorite(icon) {
+    const favoritableId = icon.dataset.favoritableId;
+    const favoritableType = icon.dataset.favoritableType;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    fetch(`/toggle-favorite`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({
+            favoritable_id: favoritableId,
+            favoritable_type: favoritableType
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'added') {
+            icon.classList.remove('far');
+            icon.classList.add('fas', 'favorited');
+            updateFavoritesCount(1); // ✅ زود العدد 1
+        } else if (data.status === 'removed') {
+            icon.classList.remove('fas', 'favorited');
+            icon.classList.add('far');
+            updateFavoritesCount(-1); // ✅ قلل العدد 1
+        } else if (data.status === 'unauthenticated') {
+            alert('Please log in to add to favorites');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// 🔥 فانكشن لتحديث العداد
+function updateFavoritesCount(change) {
+    const badge = document.querySelector(".icon-link .badge");
+    if (badge) {
+        let currentCount = parseInt(badge.textContent);
+        let newCount = currentCount + change;
+
+        if (newCount > 0) {
+            badge.textContent = newCount;
+        } else {
+            badge.remove(); // لو مفيش مفضلات يشيل البادج
+        }
+    } else if (change > 0) {
+        // لو مفيش بادج وضاف مفضلة أول مرة
+        const iconLink = document.querySelector(".icon-link");
+        const newBadge = document.createElement("span");
+        newBadge.classList.add("badge");
+        newBadge.textContent = change;
+        iconLink.appendChild(newBadge);
+    }
+}

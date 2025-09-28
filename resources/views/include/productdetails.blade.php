@@ -1,127 +1,410 @@
-@extends('index')
+@extends('welcome')
 @section('content')
- <div class="container my-5">
-        <div class="product-container">
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="product-image">
-                        <img src="{{ asset('image/products/' . $product->image) }}" alt="{{ $product->name_en }}"
-                            class="img-fluid" />
-                    </div>
-                </div>
-                <div class="col-md-7">
-                    <div class="product-details">
-                        <h2>{{ $product->name }}</h2>
-                        <p class="features">
-                            @if ($product->description)
-                                @foreach (explode("\n", $product->description) as $feature)
-                                    @if (trim($feature) !== '')
-                                        &#x2714; {{ trim($feature) }}<br>
-                                    @endif
-                                @endforeach
-                            @else
-                                No specific features listed.
-                            @endif
-                        </p>
+    <!-- nav down Section -->
+    <div class="breadcrumb">
+        <div class="container">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Shop</a></li>
+                <li class="divider"></li>
+                <li class="current">Asgaard sofa</li>
+            </ul>
+        </div>
+    </div>
 
-                        <form method="POST" action="{{ route('cart.add') }}" id="add-to-cart-form" class="w-100 mb-3"
-                            style="display: flex; flex-direction: column; align-items: center;">
-                            @csrf
-                            <div class="row align-items-center mb-3"
-                                style="display: flex; flex-direction: column; align-items: center;">
-                                <div class="col-md-6 col-lg-5 mx-auto">
-                                    <label for="period" class="text-center w-100">Period:</label>
-                                    <div class="d-flex justify-content-center">
-                                        <select id="period" name="duration_price_id" class="form-control form-control-sm w-auto">
-                                            @if ($product->durations->isNotEmpty())
-                                                @foreach ($product->durations->sortBy('duration_in_months') as $duration)
-                                                    <option value="{{ $duration->id }}"
-                                                        data-price-usd="{{ $duration->price_usd }}"
-                                                        data-duration-in-days="{{ $duration->duration_in_days }}"
-                                                        {{ $loop->first ? 'selected' : '' }}>
-                                                        {{ $duration->duration_in_months }}
-                                                        {{ $duration->duration_in_months == 1 ? 'month' : 'months' }}
-                                                        ({{ number_format($duration->price_usd, 2) }} $)
-                                                    </option>
-                                                @endforeach
-                                            @else
-                                                <option value="">No periods available</option>
-                                            @endif
-                                        </select>
+    <div class="container my-5">
+        <div class="row product-page-card rounded-4 p-4">
+            <div class="col-lg-5 p-3 d-flex justify-content-center">
+                <div class="card product-card border-0 rounded-4">
+                    <img src="{{ asset('image/products/' . $product->image) }}" alt="{{ $product->name_en }}"
+                        class="card-img-top rounded-4" />
+                </div>
+            </div>
+
+            <div class="col-lg-7 p-3 d-flex flex-column">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h1 class="product-title">{{ $product->name_en }}</h1>
+                </div>
+
+                <h2 class="product-price">{{ number_format($product->price_usd, 2) }} $</h2>
+
+                <p class="product-description mb-4">
+                    {{ $product->description_en }}
+                </p>
+
+                {{-- ✅ الفورم بتاع إضافة للسلة --}}
+                <form method="POST" action="{{ route('cart.add') }}" id="add-to-cart-form">
+                    @csrf
+                    <h5 class="duration-title mb-2">Duration</h5>
+                    <div class="d-flex duration-options-container flex-wrap mb-4" role="group">
+                        @foreach ($product->durations->sortBy('duration_in_months') as $duration)
+                            <label class="btn btn-outline-secondary duration-option me-2">
+                                <input type="radio" name="duration_price_id" value="{{ $duration->id }}"
+                                    data-price-usd="{{ $duration->price_usd }}" class="d-none"
+                                    {{ $loop->first ? 'checked' : '' }}>
+                                {{ $duration->duration_in_months }}
+                                {{ $duration->duration_in_months == 1 ? 'month' : 'months' }}
+                                ({{ number_format($duration->price_usd, 2) }} $)
+                            </label>
+                        @endforeach
+                    </div>
+
+                    {{-- ✅ الكمية --}}
+                    <div class="d-flex align-items-center mb-4 gap-2 mt-3">
+                        <div class="input-group custom-quantity-selector">
+                            <button type="button" class="btn custom-quantity-btn" onclick="changeQty(-1)">-</button>
+                            <input type="text" id="quantity_input" name="quantity"
+                                class="form-control text-center custom-quantity-input" value="1" readonly />
+                            <button type="button" class="btn custom-quantity-btn" onclick="changeQty(1)">+</button>
+                        </div>
+                        <button type="submit" class="btn btn-success">Add To Cart</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="tab-buttons">
+        <button class="tab-button active" onclick="showContent('descriptionContent', event)">
+            Description
+        </button>
+        <button class="tab-button" onclick="showContent('reviewsContent', event)">
+            Reviews
+        </button>
+    </div>
+    <div class="container">
+        <div id="descriptionContent" class="tab-content active">
+            @if ($product->long_description_en)
+                {!! nl2br(e($product->long_description_en)) !!}
+            @else
+                <p>No detailed description available.</p>
+            @endif
+        </div>
+
+        <div id="reviewsContent" class="tab-content">
+            <div class="add-comment-box">
+                <div class="user-avatar">
+                    <img src="../image/Ellipse3.png" alt="User Avatar" class="avatar-img" />
+                </div>
+                <div class="comment-input-area">
+                    <input type="text" placeholder="Add a comment..." class="comment-input" />
+                    <button class="post-button">Post</button>
+                </div>
+            </div>
+
+            <div class="swiper myReviewsSwiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="review-section">
+                            <div class="review-header">
+                                <img src="../image/Ellipse3.png" alt="User Image" class="user-image" />
+                                <div class="user-info">
+                                    <h4>Armen Sargsyan</h4>
+                                    <div class="rating">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star"></span>
                                     </div>
                                 </div>
+                                <p class="review-date">1 month ago</p>
                             </div>
-
-                            {{-- تم حذف الحقول المخفية للـ duration_price_id و duration_in_days لأنها لم تعد ضرورية --}}
-                            {{-- القيمة سترسل الآن مباشرة من الـ <select> --}}
-
-                            <input type="hidden" name="quantity" id="quantity_input_hidden" value="1">
-
-                            @if (session('success'))
-                                <div class="alert alert-success alert-dismissible fade show w-100" role="alert">
-                                    {{ session('success') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
+                            <div class="review-body">
+                                <p>
+                                    Embodying the raw, wayward spirit of rock 'n' roll, the
+                                    Kilburn portable active stereo speaker takes the
+                                    unmistakable look and sound of Marshall, unplugs the chords,
+                                    and takes the show on the road.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="review-section">
+                            <div class="review-header">
+                                <img src="../image/Ellipse3.png" alt="User Image" class="user-image" />
+                                <div class="user-info">
+                                    <h4>Amira Khaled</h4>
+                                    <div class="rating">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star"></span>
+                                    </div>
                                 </div>
-                            @endif
-
-                            @if (session('error'))
-                                <div class="alert alert-danger alert-dismissible fade show w-100" role="alert">
-                                    {{ session('error') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
+                                <p class="review-date">3 weeks ago</p>
+                            </div>
+                            <div class="review-body">
+                                <p>
+                                    The product quality is excellent and the design is very
+                                    stylish. I highly recommend it!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="review-section">
+                            <div class="review-header">
+                                <img src="../image/Ellipse3.png" alt="User Image" class="user-image" />
+                                <div class="user-info">
+                                    <h4>Ahmed Gamal</h4>
+                                    <div class="rating">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                    </div>
                                 </div>
-                            @endif
+                                <p class="review-date">1 week ago</p>
+                            </div>
+                            <div class="review-body">
+                                <p>
+                                    This is the best item I've ever bought. It's truly amazing
+                                    and the sound quality is top-notch.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination reviews-pagination"></div>
+            </div>
+        </div>
+    </div>
 
-                            @if ($errors->any())
-                                <div class="alert alert-danger alert-dismissible fade show w-100" role="alert">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
+    <!-- card -->
+    <div class="pro-section py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Our Products</h2>
+            <div class="row g-4 justify-content-center">
+                <div class="col-6 col-md-3">
+                    <div class="pro-card">
+                        <img src="../image/card1.jpg" class="img-fluid" alt="Syltherine" />
+
+                        <span class="pro-badge pro-badge-new">New</span>
+                        <span class="pro-badge pro-badge-discount">-30%</span>
+
+                        <div class="pro-overlay">
+                            <div class="pro-hover-menu">
+                                <button class="btn pro-add-to-cart">Add to cart</button>
+                                <div class="pro-btn-actions">
+                                    <button class="btn pro-btn-icon">
+                                        <i class="fas fa-share-alt"></i>Share
+                                    </button>
+                                    <button class="btn pro-btn-icon">
+                                        <i class="far fa-heart"></i>Like
+                                    </button>
                                 </div>
-                            @endif
+                            </div>
+                        </div>
 
-                            <button type="submit" class="btn btn-success add-to-cart w-100">Add to Cart</button>
-                        </form>
+                        <div class="pro-content">
+                            <div class="pro-title">Syltherine</div>
+                            <div class="pro-description">Stylish cafe chair</div>
+                            <div class="pro-price-group">
+                                <span class="pro-price-new">Rp 2.500.000</span>
+                                <span class="pro-price-old">Rp 3.500.000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                        <div class="wishlist-share d-flex justify-content-between align-items-center">
-                            <span class="wishlist">
-                                <i class="favorite-icon
-                                    @if (Auth::check() && Auth::user()->allFavorites()->where('favoritable_id', $product->id)->where('favoritable_type', 'App\Models\Product')->exists()) fas fa-heart favorited
-                                    @else
-                                        far fa-heart @endif
-                                    "
-                                    data-favoritable-id="{{ $product->id }}" data-favoritable-type="product"></i>
-                                Add to Wishlist
-                            </span>
+                <div class="col-6 col-md-3">
+                    <div class="pro-card">
+                        <img src="../image/card1.jpg" class="img-fluid" alt="Lolito" />
+                        <span class="pro-badge pro-badge-new">New</span>
+                        <div class="pro-overlay">
+                            <div class="pro-hover-menu">
+                                <button class="btn pro-add-to-cart">Add to cart</button>
+                                <div class="pro-btn-actions">
+                                    <button class="btn pro-btn-icon">
+                                        <i class="fas fa-share-alt"></i>Share
+                                    </button>
+                                    <button class="btn pro-btn-icon">
+                                        <i class="far fa-heart"></i>Like
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pro-content">
+                            <div class="pro-title">Lolito</div>
+                            <div class="pro-description">Luxury big sofa</div>
+                            <div class="pro-price-group">
+                                <span class="pro-price-new">Rp 7.000.000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                            <div class="share-icons">
-                                <span>Share:</span>
-                                <a href="https://www.facebook.com/BibasataSoftAi"><i class="fab fa-facebook-f"></i></a>
-                                <a href="https://www.instagram.com/bibasatasoftai"><i class="fab fa-instagram"></i></a>
-                                <a href="https://wsend.co/201023290446"><i class="fa-brands fa-whatsapp"></i></a>
+                <div class="col-6 col-md-3">
+                    <div class="pro-card">
+                        <img src="../image/card1.jpg" class="img-fluid" alt="Product 3" />
+                        <span class="pro-badge pro-badge-discount">-20%</span>
+                        <div class="pro-overlay">
+                            <div class="pro-hover-menu">
+                                <button class="btn pro-add-to-cart">Add to cart</button>
+                                <div class="pro-btn-actions">
+                                    <button class="btn pro-btn-icon">
+                                        <i class="fas fa-share-alt"></i>Share
+                                    </button>
+                                    <button class="btn pro-btn-icon">
+                                        <i class="far fa-heart"></i>Like
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pro-content">
+                            <div class="pro-title">Product 3</div>
+                            <div class="pro-description">Short description here</div>
+                            <div class="pro-price-group">
+                                <span class="pro-price-new">Rp 1.200.000</span>
+                                <span class="pro-price-old">Rp 1.500.000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <div class="pro-card">
+                        <img src="../image/card1.jpg" class="img-fluid" alt="Product 4" />
+                        <div class="pro-overlay">
+                            <div class="pro-hover-menu">
+                                <button class="btn pro-add-to-cart">Add to cart</button>
+                                <div class="pro-btn-actions">
+                                    <button class="btn pro-btn-icon">
+                                        <i class="fas fa-share-alt"></i>Share
+                                    </button>
+                                    <button class="btn pro-btn-icon">
+                                        <i class="far fa-heart"></i>Like
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pro-content">
+                            <div class="pro-title">Product 4</div>
+                            <div class="pro-description">Another cool item</div>
+                            <div class="pro-price-group">
+                                <span class="pro-price-new">Rp 5.000.000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <div class="pro-card">
+                        <img src="../image/card1.jpg" class="img-fluid" alt="Product 5" />
+                        <span class="pro-badge pro-badge-new">New</span>
+                        <div class="pro-overlay">
+                            <div class="pro-hover-menu">
+                                <button class="btn pro-add-to-cart">Add to cart</button>
+                                <div class="pro-btn-actions">
+                                    <button class="btn pro-btn-icon">
+                                        <i class="fas fa-share-alt"></i>Share
+                                    </button>
+                                    <button class="btn pro-btn-icon">
+                                        <i class="far fa-heart"></i>Like
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pro-content">
+                            <div class="pro-title">Product 5</div>
+                            <div class="pro-description">Cool desk lamp</div>
+                            <div class="pro-price-group">
+                                <span class="pro-price-new">Rp 350.000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <div class="pro-card">
+                        <img src="../image/card1.jpg" class="img-fluid" alt="Product 6" />
+                        <div class="pro-overlay">
+                            <div class="pro-hover-menu">
+                                <button class="btn pro-add-to-cart">Add to cart</button>
+                                <div class="pro-btn-actions">
+                                    <button class="btn pro-btn-icon">
+                                        <i class="fas fa-share-alt"></i>Share
+                                    </button>
+                                    <button class="btn pro-btn-icon">
+                                        <i class="far fa-heart"></i>Like
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pro-content">
+                            <div class="pro-title">Product 6</div>
+                            <div class="pro-description">Stylish mug</div>
+                            <div class="pro-price-group">
+                                <span class="pro-price-new">Rp 150.000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <div class="pro-card">
+                        <img src="../image/card1.jpg" class="img-fluid" alt="Product 7" />
+                        <div class="pro-overlay">
+                            <div class="pro-hover-menu">
+                                <button class="btn pro-add-to-cart">Add to cart</button>
+                                <div class="pro-btn-actions">
+                                    <button class="btn pro-btn-icon">
+                                        <i class="fas fa-share-alt"></i>Share
+                                    </button>
+                                    <button class="btn pro-btn-icon">
+                                        <i class="far fa-heart"></i>Like
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pro-content">
+                            <div class="pro-title">Product 7</div>
+                            <div class="pro-description">Another stylish item</div>
+                            <div class="pro-price-group">
+                                <span class="pro-price-new">Rp 2.000.000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <div class="pro-card">
+                        <img src="../image/card1.jpg" class="img-fluid" alt="Product 8" />
+                        <span class="pro-badge pro-badge-new">New</span>
+                        <span class="pro-badge pro-badge-discount">-50%</span>
+                        <div class="pro-overlay">
+                            <div class="pro-hover-menu">
+                                <button class="btn pro-add-to-cart">Add to cart</button>
+                                <div class="pro-btn-actions">
+                                    <button class="btn pro-btn-icon">
+                                        <i class="fas fa-share-alt"></i>Share
+                                    </button>
+                                    <button class="btn pro-btn-icon">
+                                        <i class="far fa-heart"></i>Like
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pro-content">
+                            <div class="pro-title">Product 8</div>
+                            <div class="pro-description">A nice product</div>
+                            <div class="pro-price-group">
+                                <span class="pro-price-new">Rp 450.000</span>
+                                <span class="pro-price-old">Rp 900.000</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <hr class="my-5" />
-            <div class="product-description">
-                <h2 class="description-title text-center mb-4">Description</h2>
-                <div class="container">
-                    @if ($product->long_description_en)
-                        {!! nl2br(e($product->long_description_en)) !!}
-                    @else
-                        <p>No detailed description available.</p>
-                    @endif
-                </div>
+
+            <div class="text-center mt-5">
+                <button class="btn pro-show-more-btn">Show More</button>
             </div>
         </div>
     </div>
 @endsection
-
-

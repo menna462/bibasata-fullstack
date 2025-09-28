@@ -24,13 +24,11 @@ class CartController extends Controller
      */
     public function index()
     {
-        // استرجاع بيانات سلة التسوق من الجلسة (Session)
         $cart = session()->get('cart', []);
         $formattedCartItems = [];
         $cartTotal = 0;
 
         foreach ($cart as $durationPriceId => $itemDetails) {
-            // جلب البيانات من جدول duration_prices مع علاقاته
             $durationPrice = DurationPrice::with(['product', 'bundle'])->find($durationPriceId);
 
             if ($durationPrice) {
@@ -67,7 +65,7 @@ class CartController extends Controller
                 session()->put('cart', $cart);
             }
         }
-        return view('include.cart', compact('formattedCartItems', 'cartTotal', 'cart'));
+        return view('include.cart_price', compact('formattedCartItems', 'cartTotal', 'cart'));
     }
 
     public function add(Request $request)

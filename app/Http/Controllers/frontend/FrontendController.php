@@ -20,18 +20,21 @@ class FrontendController extends Controller
         $products = Product::latest()->take(8)->get();
         $bundles = Bundle::take(3)->get();
          $sliders = Slider::get();
+         $currentLocale = App::getLocale();
+         $nameColumn = 'name_' . $currentLocale;
         $comments = Comment::where('page_name', 'homepage')
             ->with('user')
             ->latest()
             ->get();
 
-        return view('welcome', compact('categories', 'products', 'bundles', 'comments','sliders')); // <--- إضافة 'comments' هنا
+        return view('include.home', compact('categories', 'products', 'bundles', 'comments','sliders','nameColumn','currentLocale')); // <--- إضافة 'comments' هنا
     }
 
     public function show($id)
     {
         $categories = Category::with('products')->get();
         $product = Product::findOrFail($id);
+        $product = Product::with('durations')->findOrFail($id);
         return view('include.productdetails', compact('product', 'categories'));
     }
 
@@ -49,17 +52,20 @@ class FrontendController extends Controller
 
     $categories = Category::with('products')->get(); // جلب الفئات مع منتجاتها
 
-    $productsQuery = Product::query();
-    $bundlesQuery = Bundle::query();
+        $currentLocale = App::getLocale();
+        $nameColumn = 'name_' . $currentLocale; // العمود الخاص باللغة الحالية للبحث
 
-    if ($searchTerm) {
-        $productsQuery->where(function ($q) use ($searchTerm) {
-            $q->where('name_en', 'like', '%' . $searchTerm . '%');
-        });
+        $productsQuery = Product::query();
+        $bundlesQuery = Bundle::query();
 
-        $bundlesQuery->where(function ($q) use ($searchTerm) {
-            $q->where('name_en', 'like', '%' . $searchTerm . '%');
-        });
+        if ($searchTerm) {
+            $productsQuery->where(function ($q) use ($searchTerm, $nameColumn) { // إضافة $nameColumn
+                $q->where($nameColumn, 'like', '%' . $searchTerm . '%'); // البحث في العمود الصحيح
+            });
+
+            $bundlesQuery->where(function ($q) use ($searchTerm, $nameColumn) { // إضافة $nameColumn
+                $q->where($nameColumn, 'like', '%' . $searchTerm . '%'); // البحث في العمود الصحيح
+            });
     }
 
     if ($categoryId && $categoryId !== 'all') {
@@ -81,23 +87,26 @@ class FrontendController extends Controller
 
     $comments = Comment::where('page_name', 'homepage')->with('user')->latest()->get();
 
-    return view('welcome', compact('categories', 'products', 'bundles', 'searchTerm', 'categoryId', 'comments'));
+    return view('welcome', compact('categories', 'products', 'bundles', 'searchTerm', 'categoryId', 'comments','nameColumn','currentLocale'));
 }
 
     public function liveSearch(Request $request)
     {
         $searchTerm = $request->input('query');
-
+        $currentLocale = App::getLocale();
+        $nameColumn = 'name_' . $currentLocale;
+        $descriptionColumn = 'description_' . $currentLocale; // إذا كان لديكِ description_ar و description_en
+        $shortDescriptionColumn = 'short_description_' . $currentLocale;
         $products = collect();
         $bundles = collect();
 
-        if ($searchTerm) {
-            $products = Product::where('name_en', 'like', '%' . $searchTerm . '%')
-                ->orWhere('description_en', 'like', '%' . $searchTerm . '%')
+       if ($searchTerm) {
+            $products = Product::where($nameColumn, 'like', '%' . $searchTerm . '%') // البحث في عمود الاسم الصحيح
+                ->orWhere($descriptionColumn, 'like', '%' . $searchTerm . '%') // البحث في عمود الوصف الصحيح
                 ->get();
 
-            $bundles = Bundle::where('name_en', 'like', '%' . $searchTerm . '%')
-                ->orWhere('short_description_en', 'like', '%' . $searchTerm . '%')
+            $bundles = Bundle::where($nameColumn, 'like', '%' . $searchTerm . '%') // البحث في عمود الاسم الصحيح
+                ->orWhere($shortDescriptionColumn, 'like', '%' . $searchTerm . '%') // البحث في عمود الوصف المختصر الصحيح
                 ->get();
         }
 
@@ -107,7 +116,7 @@ class FrontendController extends Controller
         foreach ($products as $product) {
             $results[] = [
                 'type' => 'product',
-                'name' => $product->name_en ?? $product->name,
+                'name' => $product->$nameColumn ?? $product->name_en, // استدعاء حسب المتغير
                 'url' => route('product.details', $product->id)
             ];
         }

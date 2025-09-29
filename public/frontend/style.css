@@ -3,6 +3,9 @@ body {
     max-width: 100%;
     overflow-x: hidden;
 }
+a{
+    text-decoration: none !important;
+}
 .rtl-links ul {
    list-style-position: inside;   /* تخلي النقطة قريبة من النص */
     direction: rtl;                /* عشان النقط تتحرك يمين */
@@ -2239,3 +2242,47 @@ p {
 .favorite-icon.favorited {
     color: red;
 } */
+
+/* تنسيق العنصر الرئيسي */
+.search-toggle-li {
+    position: relative; /* مهم جداً لتحديد موقع حقل البحث بالنسبة للأيقونة */
+    list-style: none;
+    margin: 0 10px;
+}
+
+/* تنسيق أيقونة البحث */
+.search-icon {
+    /* display: block;
+    padding: 10px;
+    font-size: 18px;
+    color: #333;  */
+}
+
+.search-input-container {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    /* border: 1px solid #ccc; */
+    padding: 10px;
+    z-index: 1000; /* للتأكد من أنها تظهر فوق باقي العناصر */
+    min-width: 250px;
+}
+
+.search-input-container .search-input {
+    width: 75%;
+    padding: 5px;
+    /* border: 1px solid #ddd; */
+    margin-left: 5px;
+}
+.search-input-container .search-btn {
+    width: 20%;
+    padding: 6px;
+    border: none;
+    background-color: #007bff; /* لون مميز للزر */
+    color: white;
+    cursor: pointer;
+}
+.product-description{
+    color:#000
+}

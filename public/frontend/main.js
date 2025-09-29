@@ -262,3 +262,89 @@ function updateFavoritesCount(change) {
         iconLink.appendChild(newBadge);
     }
 }
+document.addEventListener('DOMContentLoaded', function() {
+    const searchIcon = document.querySelector('.search-icon');
+    const searchContainer = document.querySelector('.search-input-container');
+
+    // دالة التبديل بين الظهور والإخفاء
+    searchIcon.addEventListener('click', function(event) {
+        // منع السلوك الافتراضي للرابط
+        event.preventDefault();
+
+        // تبديل حالة الظهور
+        if (searchContainer.style.display === 'none' || searchContainer.style.display === '') {
+            searchContainer.style.display = 'flex'; // استخدام flex أو block
+            searchContainer.querySelector('.search-input').focus();
+        } else {
+            searchContainer.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('click', function(event) {
+        const isClickInside = searchContainer.contains(event.target) || searchIcon.contains(event.target);
+        if (!isClickInside && searchContainer.style.display !== 'none') {
+            searchContainer.style.display = 'none';
+        }
+    });
+});
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const quantityInput = document.querySelector('.custom-quantity-input');
+        const priceElement = document.getElementById('current-price');
+        const durationRadios = document.querySelectorAll('.duration-radio');
+        const durationLabels = document.querySelectorAll('.duration-option');
+
+        // ===================================
+        // 1. وظيفة محدد الكمية (Quantity Selector)
+        // ===================================
+        document.querySelectorAll('.custom-quantity-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                let currentValue = parseInt(quantityInput.value);
+                const action = this.getAttribute('data-action');
+
+                if (action === 'increment') {
+                    quantityInput.value = currentValue + 1;
+                } else if (action === 'decrement' && currentValue > 1) {
+                    quantityInput.value = currentValue - 1;
+                }
+            });
+        });
+
+        // ===================================
+        // 2. وظيفة اختيار المدة وتحديث السعر
+        // ===================================
+        durationLabels.forEach(label => {
+            label.addEventListener('click', function() {
+                // إزالة فئة 'active' من كل الأزرار
+                durationLabels.forEach(lbl => lbl.classList.remove('active'));
+
+                // إضافة فئة 'active' للزر الحالي
+                this.classList.add('active');
+
+                // الحصول على راديو الزر المقابل
+                const radioId = this.getAttribute('for');
+                const selectedRadio = document.getElementById(radioId);
+
+                if (selectedRadio) {
+                    selectedRadio.checked = true;
+                    // تحديث السعر المعروض
+                    updatePriceDisplay(selectedRadio.getAttribute('data-price'));
+                }
+            });
+        });
+
+        function updatePriceDisplay(newPrice) {
+            if (priceElement && newPrice !== null) {
+                // تنسيق السعر كعملة (افترضنا أنك تستخدم اللغتين الإنجليزية والعربية)
+                // يمكن تعديل التنسيق حسب العملة
+                const formattedPrice = parseFloat(newPrice).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                priceElement.textContent = `Rs. ${formattedPrice}`;
+            }
+        }
+    });
+

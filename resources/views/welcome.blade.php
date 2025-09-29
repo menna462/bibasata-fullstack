@@ -68,10 +68,17 @@
                     </li>
 
                     {{-- أيقونة البحث --}}
-                    <li>
-                        <a href="#" onclick="toggleSearch()" class="search-toggle-btn">
+                    <li class="search-toggle-li">
+                        <a href="javascript:void(0)" class="search-icon">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </a>
+
+                        <form action="{{ route('frontend.search') }}" method="GET" class="search-input-container"
+                            style="display: none;">
+                            <input type="text" name="query" placeholder="ابحث هنا..." class="search-input"
+                                value="{{ request('query') }}">
+                            <button type="submit" class="search-btn">بحث</button>
+                        </form>
                     </li>
 
                     {{-- أيقونة المفضلة (العداد يظهر فقط للمسجلين) --}}
@@ -87,12 +94,9 @@
                             @endauth
                         </a>
                     </li>
-
-                    {{-- 🛒 أيقونة السلة (العداد يظهر للجميع: تم حذف @auth) 🛒 --}}
                     <li>
                         <a href="{{ route('cart') }}" class="icon-link position-relative">
                             <i class="fa-solid fa-cart-shopping"></i>
-                            {{-- منطق حساب العداد من الـ Session، يعمل للمسجلين والزوار --}}
                             @php
                                 $cart = session()->get('cart', []);
                                 $cartCount = array_sum(array_column($cart, 'quantity'));
@@ -224,7 +228,7 @@
                     <li><a href="{{ url('/shop') }}">{{ __('language.Shop') }}</a></li>
                     <li><a href="{{ url('/about') }}">{{ __('language.About') }}</a></li>
                     <li><a href="{{ url('/contact') }}">{{ __('language.Contact') }}</a></li>
-                      <li><a href="{{ url('/conditions') }}">{{ __('language.Terms') }}</a></li>
+                    <li><a href="{{ url('/conditions') }}">{{ __('language.Terms') }}</a></li>
                 </ul>
             </div>
 
@@ -264,9 +268,7 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
     <script src="{{ asset('frontend/main.js') }}"></script>
-<script>
-
-</script>
+    <script></script>
 
 </body>
 

@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class FrontendCategoryController extends Controller
 {
@@ -21,7 +22,8 @@ class FrontendCategoryController extends Controller
         $category = Category::findOrFail($id);
         $products = Product::where('category_id', $id)->get();
         $categories = Category::withCount('products')->get(); // دي مهمة عشان يظهر العدد
-
-        return view('include.product', compact('category', 'products', 'categories'));
+        $currentLocale = App::getLocale();
+        $nameColumn = 'name_' . $currentLocale;
+        return view('include.product', compact('category', 'products', 'categories','nameColumn','currentLocale'));
     }
 }

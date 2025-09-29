@@ -35,12 +35,14 @@ class FrontendController extends Controller
         $categories = Category::with('products')->get();
         $product = Product::findOrFail($id);
         $product = Product::with('durations')->findOrFail($id);
-        return view('include.productdetails', compact('product', 'categories'));
+        return view('include.productdetails', compact('product', 'categories',));
     }
 
     public function showBundelDetails($id)
     {
         $categories = Category::with('products')->get();
+         $currentLocale = App::getLocale();
+         $nameColumn = 'name_' . $currentLocale;
         $bundle = Bundle::findOrFail($id);
         return view('include.bundeldetails', compact('bundle', 'categories'));
     }

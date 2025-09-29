@@ -16,7 +16,7 @@
         <div class="swiper-button-prev"></div>
         <div class="swiper-button-next"></div>
     </div>
-
+{{-- animation --}}
     <div class="tow-sections">
         <div class="section">
             <img src="{{ asset('frontend/image/header.gif') }}" alt="" />
@@ -43,27 +43,30 @@
         </div>
     </div>
 
-    <section class="section-container section-three">
-        <div class="aksam">
-            <h1>{{ __('language.main_categories') }}</h1>
-        </div>
-        <div class="swiper allcard">
-            <div class="swiper-wrapper">
-                @foreach ($categories as $category)
-                    <div class="category-wrapper swiper-slide">
+<section class="section-container section-three">
+    <div class="aksam">
+        <h1>{{ __('language.main_categories') }}</h1>
+    </div>
+    <div class="swiper allcard">
+        <div class="swiper-wrapper">
+            @foreach ($categories as $category)
+                <div class="category-wrapper swiper-slide">
+                    <a href="{{ route('category.products', $category->id) }}">
                         <div class="section-item">
                             <div class="section-icon">
                                 <img src="{{ asset('image/category/' . $category->image) }}" alt="" />
                             </div>
                         </div>
                         <p>{{ $category->$nameColumn }}</p>
-                    </div>
-                @endforeach
-            </div>
-            <div class="swiper-button-prev categories-prev"></div>
-            <div class="swiper-button-next categories-next"></div>
+                    </a>
+                </div>
+            @endforeach
         </div>
-    </section>
+        <div class="swiper-button-prev categories-prev"></div>
+        <div class="swiper-button-next categories-next"></div>
+    </div>
+</section>
+
 
     <div class="pro-section py-5">
         <div class="container">

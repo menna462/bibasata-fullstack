@@ -1,94 +1,104 @@
-@extends('index')
+@extends('welcome')
 @section('content')
-    <!-- Page Header Start -->
-    <div class="container-fluid"
-        style="background-image: url('{{ asset('frontend/images/shop.png') }}'); background-size: cover; background-position: center; min-height: 400px;">
-        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px;">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3 text-white">{{ $category->name }}</h1>
-            <div class="d-flex flex-wrap justify-content-center">
-                @foreach ($categories as $cat)
-                    <div class="category-item mx-3">
-                        <a href="{{ route('category.products', $cat->id) }}" class="text-white category-link"
-                            data-category="{{ $cat->name }}">
-                            <h3>{{ $cat->name }}</h3>
+    <!-- nav down Section -->
+    <div class="shop">
+        <div class="shop-contan">
+            <h1>{{ $category->name_en }}</h1>
+            <p>
+                <a href="{{ url('/') }}">Home</a>
+                <span><i class="fas fa-chevron-left"></i></span>
+                {{ $category->name_en }}
+            </p>
+        </div>
+    </div>
 
-                        </a>
-                        <p class="text-white">{{ $cat->products_count }} Product</p>
+    <div class="filter-bar row justify-content-center text-center">
+        <!-- القسم الشمال -->
+        <div class="left-section col-12 col-md-6 d-flex justify-content-center align-items-center mb-3 mb-md-0">
+            <div class="filter-dropdown dropdown me-3">
+                <button class="filter-option dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Filter</span>
+                </button>
+                <ul class="filter-dropdown-menu dropdown-menu">
+                    @foreach ($categories as $category)
+                        <li>
+                            <a class="dropdown-item" href="{{ route('category.products', $category->id) }}">
+                                {{ $category->$nameColumn }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+            <div class="vertical-divider"></div>
+            <span class="results-text ms-3">Showing 1-16 of 32 results</span>
+        </div>
+
+        <!-- القسم اليمين -->
+        <div class="right-section col-12 col-md-6 d-flex justify-content-center align-items-center">
+            <p class="show-button mb-0 me-2">Show</p>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    16
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="#">10</a></li>
+                    <li><a class="dropdown-item" href="#">16</a></li>
+                    <li><a class="dropdown-item" href="#">32</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-shop">
+        <div class="container">
+            <h2 class="text-center mb-5">Our Products</h2>
+            <div class="row g-4 justify-content-center mt-4" id="products">
+                @foreach ($products as $product)
+                    <div class="col-6 col-md-3">
+                        <div class="pro-card">
+                            {{-- صورة المنتج --}}
+                            <img src="{{ asset('image/products/' . $product->image) }}" class="img-fluid"
+                                alt="{{ $product->name_en }}" />
+
+                            <div class="pro-overlay">
+                                <div class="pro-hover-menu">
+                                    <button class="btn pro-add-to-cart">Add to cart</button>
+                                    <div class="pro-btn-actions">
+                                        {{-- أيقونة المفضلة --}}
+                                        <button class="btn pro-btn-icon">
+                                            <i class="favorite-icon
+                                            @if (Auth::check() &&
+                                                    Auth::user()->allFavorites()->where('favoritable_id', $product->id)->where('favoritable_type', 'App\Models\Product')->exists()) fas fa-heart favorited
+                                            @else far fa-heart @endif"
+                                                data-favoritable-id="{{ $product->id }}" data-favoritable-type="product">
+                                            </i>Like
+                                        </button>
+
+                                        {{-- زر المشاركة --}}
+                                        <button class="btn pro-btn-icon">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pro-content">
+                                <div class="pro-title">{{ $product->name_en }}</div>
+                                <div class="pro-description">{{ $product->description_en }}</div>
+                                {{-- لو حابة تضيفي أسعار زي الكود التاني --}}
+                                {{--
+                            <div class="pro-price-group">
+                                <span class="pro-price-new">{{ $product->price }} EGP</span>
+                            </div>
+                            --}}
+                            </div>
+                        </div>
                     </div>
                 @endforeach
             </div>
         </div>
-    </div>
-    <!-- Page Header End -->
-
-
-    <div class="container-fluid">
-        <div class="row align-items-center justify-content-between">
-            <!-- اللينكات على اليسار -->
-            <div class="col-md-6">
-                <span class="products fw-bold fs-4 me-3">PRODUCTS</span>
-                <a href="#" class="tab-link active" data-tab="best-seller">BEST SELLER</a>
-            </div>
-
-            <!-- الأسهم على أقصى اليمين -->
-            <div class="col-md-6 d-flex justify-content-end">
-                <div class="nav-arrows">
-                    <i class="fa-solid fa-chevron-left left-arrow"></i>
-                    <i class="fa-solid fa-chevron-right right-arrow"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    @php
-        $productsChunked = $products->chunk(8);
-    @endphp
-
-    <div class="container my-5">
-        @foreach ($productsChunked as $index => $productGroup)
-            <div class="products-group {{ $index == 0 ? 'active' : '' }}" id="group-{{ $index + 1 }}">
-                <div class="row">
-                    @foreach ($productGroup as $product)
-                        <div class="col-md-3 col-sm-6 mb-4">
-                            <div class="product-card">
-                                <div class="product-image">
-                                    <img src="{{ asset('image/products/' . $product->image) }}"
-                                        alt="{{ $product->name }}">
-                                </div>
-                                <div class="product-details">
-                                    <div class="name-category">{{ $product->name }}</div>
-                                    <div class="category">
-                                        {{ $product->category->name ?? 'Uncategorized' }}
-                                    </div>
-                                </div>
-                                <div class="product-overlay">
-                                    <div class="product-description">
-                                        {{ $product->description}}
-                                    </div>
-                                    <div class="product-actions">
-                                        {{-- أيقونة القلب للمفضلة --}}
-                                        <i class="favorite-icon left-icon
-                                            @if (Auth::check() &&
-                                                    Auth::user()->allFavorites()->where('favoritable_id', $product->id)->where('favoritable_type', 'App\Models\Product')->exists()) fas fa-heart {{-- قلب مليان لو مفضل --}}
-                                            @else
-                                                far fa-heart {{-- قلب فارغ لو مش مفضل --}} @endif
-                                            "
-                                            data-favoritable-id="{{ $product->id }}" data-favoritable-type="product"></i>
-
-                                        {{-- زرار View Details الحالي --}}
-                                        <a href="{{ route('product.details', ['id' => $product->id]) }}"
-                                            class="btn btn-success">
-                                            <span>View Details</span>
-                                        </a>
-
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endforeach
     </div>
 @endsection

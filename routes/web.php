@@ -46,8 +46,6 @@ Route::middleware(['CheckAdmin', 'admin.only'])->group(function () {
     Route::get('/coupons/delete/{id}', [CouponController::class, 'destroy'])->name('coupons.destroy');
     Route::get('/slider/delete/{id}', [SliderController::class, 'destroy'])->name('slider.destroy');
     Route::get('/cover/delete/{id}', [CoverController::class, 'cover'])->name('cover.destroy');
-
-
 });
 
 Route::middleware('CheckAdmin')->group(function () {
@@ -140,6 +138,9 @@ Route::group(
             $categories = Category::with('products')->get();
             return view('include.about', compact('categories'));
         })->name('about');
+        Route::get('/conditions', function () {
+            return view('include.conditions');
+        })->name('conditions');
 
         Route::get('/category/{id}', [FrontendCategoryController::class, 'show'])->name('category.products');
         Route::get('/product/{id}', [FrontendController::class, 'show'])->name('product.details');

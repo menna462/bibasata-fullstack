@@ -3,18 +3,17 @@ body {
     max-width: 100%;
     overflow-x: hidden;
 }
-/* html[dir="rtl"] body {
-    direction: rtl;
-    text-align: right;
+.rtl-links ul {
+   list-style-position: inside;   /* تخلي النقطة قريبة من النص */
+    direction: rtl;                /* عشان النقط تتحرك يمين */
+    text-align: right;             /* النص يبقى يمين */
+    padding-right: 20px;
+}
+.rtl-links label {
+  display: block;
+  text-align: right;
 }
 
-html[dir="ltr"] body {
-    direction: ltr;
-    text-align: left;
-} */
-.rtl-links ul {
-    flex-direction: row-reverse;
-}
 .cart-page-container[dir="rtl"] .cart-table th,
 .cart-page-container[dir="rtl"] .cart-table td {
     text-align: right !important; /* استخدام !important لضمان التغلب على أي تعارضات */
@@ -22,6 +21,38 @@ html[dir="ltr"] body {
 
 .cart-page-container[dir="rtl"] .product-info-details {
     flex-direction: row-reverse;
+}
+
+.rtl-links h2,
+.rtl-links h3,
+.rtl-links p,
+.rtl-links li {
+    text-align: right !important;
+}
+
+.rtl-links .row {
+    flex-direction: row-reverse;
+}
+.rtl-links label,
+.rtl-links input,
+.rtl-links textarea {
+  text-align: right ; /* النصوص و الـ placeholder */
+}
+
+/* لو عايزة الـ button يجي يمين */
+.rtl-links .form-custom-btn {
+  float: right;
+}
+.rtl-links h1,
+.rtl-links h2,
+.rtl-links h3,
+.rtl-links h4,
+.rtl-links h5,
+.rtl-links p,
+.rtl-links li {
+  direction: rtl;
+  unicode-bidi: bidi-override;
+  text-align: right;
 }
 
 .navbar {

@@ -35,4 +35,5 @@ public function submitContactForm(Request $request)
         return redirect()->back()->with('error', 'حدث خطأ أثناء إرسال الرسالة.');
     }
 }
+
 }

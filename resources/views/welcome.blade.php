@@ -224,6 +224,7 @@
                     <li><a href="{{ url('/shop') }}">{{ __('language.Shop') }}</a></li>
                     <li><a href="{{ url('/about') }}">{{ __('language.About') }}</a></li>
                     <li><a href="{{ url('/contact') }}">{{ __('language.Contact') }}</a></li>
+                      <li><a href="{{ url('/conditions') }}">{{ __('language.Terms') }}</a></li>
                 </ul>
             </div>
 

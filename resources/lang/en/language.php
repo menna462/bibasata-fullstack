@@ -46,5 +46,155 @@ return [
     'checkout' => 'Check Out',
     'remove' => 'Remove',
     'empty_cart' => 'Your cart is empty.',
-    
+        'page_title' => 'About',
+    'breadcrumb_home' => 'Home',
+    'breadcrumb_about' => 'About',
+
+    'about_title' => 'About Bebasata',
+    'about_subtitle' => 'More than just a digital store',
+    'about_text' => 'At Bebasata, we are your trusted partner in making access to official digital products and services simple and reliable. Since our launch, we have focused on supporting individuals, companies, and creators by providing subscriptions and paid plans for various software and websites, all at discounted prices that ensure maximum value for both time and budget.',
+
+    'mission_title' => 'Our Mission',
+    'mission_text' => 'We strive to make the world of digital services easier and more flexible for everyone by offering genuine subscriptions, secure and fast payment solutions, and a seamless experience. Our goal is to help our customers focus on creativity and productivity without worry. With us, your experience is not just a purchase — it is a real investment in your personal and professional success.',
+
+    'values_title' => 'Our Values',
+    'values' => [
+        'transparency' => 'Transparency: We believe in clarity and honesty in every product and service we provide.',
+        'security' => 'Security: We ensure safe and reliable payment solutions that protect our customers and give them peace of mind.',
+        'satisfaction' => 'Customer Satisfaction: Your satisfaction is our success, and you are always our top priority.',
+        'commitment' => 'Commitment: We provide original subscriptions with genuine guarantees for complete confidence.',
+        'innovation' => 'Innovation: We continuously improve and develop our services to meet the demands of a modern and evolving market.',
+    ],
+
+    'why_title' => 'Why Choose Us?',
+    'why' => [
+        'discounts' => 'Discounted prices for everyone without compromising on quality or authenticity.',
+        'guarantee' => 'Genuine guarantees for every subscription and service we provide.',
+        'customers' => 'More than +500 happy customers from different countries worldwide.',
+        'support' => 'Specialized technical support through a team of dedicated engineers and experts.',
+        'experience' => 'A smooth and secure experience from product selection to payment completion.',
+    ],
+
+    'vision_title' => 'Our Vision',
+    'vision_text' => 'At Bebasata, we believe technology should be accessible to everyone. That is why we aim to be the first choice for individuals and businesses looking for official digital products at fair prices and trustworthy services. Every day, we work to expand our offerings and enhance our solutions to help take your work and creativity to the next level.',
+
+    'features' => [
+        'quality' => ['title' => 'High Quality', 'desc' => 'Official subscriptions'],
+        'warranty' => ['title' => 'Warranty Protection', 'desc' => 'For the entire subscription period'],
+        'deals' => ['title' => 'Exclusive Deals', 'desc' => 'Special discounts for you'],
+        'support' => ['title' => '24 / 7 Support', 'desc' => 'Dedicated support'],
+    ],
+    'contact' => [
+        'title' => 'Contact',
+        'home' => 'Home',
+        'subtitle' => 'Contact',
+        'form_title' => 'Get In Touch With Us',
+        'form_desc' => 'For More Information About Our Product & Services. Please Feel Free To Drop Us <br> An Email. Our Staff Always Be There To Help You Out. Do Not Hesitate!',
+        'name' => 'Your name',
+        'name_placeholder' => 'Enter your full name',
+        'email' => 'Email address',
+        'email_placeholder' => 'name@example.com',
+        'subject' => 'Subject',
+        'subject_placeholder' => 'e.g., Product Inquiry',
+        'message' => 'Message',
+        'message_placeholder' => 'Message',
+        'submit' => 'Submit',
+        'phone' => 'Phone Number',
+         'phone_placeholder' => 'Enter your phone number',
+         'Terms'=>'Terms & Conditions',
+    ],
+        'terms' => [
+        'title' => 'Terms & Conditions',
+        'breadcrumb' => 'Home',
+        'welcome' => 'Welcome to Bebasata',
+        'intro' => 'By accessing our website, using our services, or purchasing any of our digital products, you agree to be bound by the following Terms & Conditions. Please read them carefully, as they are designed to protect your rights and clarify your obligations with us.',
+
+        'sections' => [
+            'original_subscriptions' => [
+                'title' => '1. Original Subscriptions',
+                'list' => [
+                    'All subscriptions we provide are 100% genuine and fully guaranteed.',
+                    'We are committed to ensuring full access to the announced services and features.',
+                    'In case of any activation issue, we guarantee to resolve the problem or compensate the customer according to our policy.',
+                ],
+            ],
+            'competitive_pricing' => [
+                'title' => '2. Competitive Pricing',
+                'list' => [
+                    'We offer discounted prices as a result of bulk purchases or shared-account systems.',
+                    'Prices are clearly displayed on the website and may be updated at any time without prior notice, without affecting previously confirmed orders.',
+                ],
+            ],
+            'privacy_policy' => [
+                'title' => '3. Privacy Policy',
+                'list' => [
+                    'We are committed to protecting our customers’ privacy and safeguarding their personal data.',
+                    'Customer data will never be shared with third parties without explicit consent, unless required by law.',
+                    'Login credentials are only used to allow customers to benefit from the service.',
+                    'For shared subscriptions: customers cannot change the email or password to ensure account security and privacy.',
+                    'For private subscriptions: customers may change the email or password depending on the type of service.',
+                ],
+            ],
+            'fast_delivery' => [
+                'title' => '4. Fast Delivery',
+                'list' => [
+                    'Most accounts are delivered within a few minutes after the order is placed.',
+                    'Certain subscriptions or specific services may take up to 24 hours maximum, depending on the type of service.',
+                    'If delivery is delayed beyond the mentioned timeframe, the customer has the right to contact support for follow-up.',
+                ],
+            ],
+            'refund_policy' => [
+                'title' => '5. Cancellation & Refund Policy',
+                'list' => [
+                    'Customers may cancel their subscription and request a refund if no more than 24 hours have passed since the service was activated.',
+                    'After this period, cancellations and refunds are only accepted if a major service issue is proven.',
+                    'Approved refunds will be issued via the same payment method within a reasonable timeframe.',
+                ],
+            ],
+            'service_interruptions' => [
+                'title' => '6. Service Interruptions',
+                'text' => 'We are committed to resolving any service issue within minutes of receiving a report. If the problem is caused by the original provider, resolution may take 24–48 hours, and customers will be compensated for the lost time.',
+            ],
+            'renewal' => [
+                'title' => '7. Renewal',
+                'list' => [
+                    'A reminder email will be sent before the subscription expires.',
+                    'Renewal will only occur if requested by the customer, ensuring no unwanted charges.',
+                    'Customers are responsible for checking their email and confirming renewal before expiry.',
+                ],
+            ],
+            'access_policy' => [
+                'title' => '8. Access Policy',
+                'list' => [
+                    'Shared accounts can be used from anywhere in the world with internet access.',
+                    'Login details cannot be used on more devices than agreed upon at the time of purchase.',
+                    'Repeated violations may result in extra fees or subscription termination without compensation.',
+                    'Unauthorized sharing or misuse of login details may result in account suspension.',
+                ],
+            ],
+            'payment_methods' => [
+                'title' => '9. Payment Methods',
+                'text' => 'We accept e-wallets, InstaPay, Vodafone Cash, credit cards, debit cards, PayPal, and cryptocurrencies. All payments are processed securely through trusted gateways.',
+            ],
+            'support' => [
+                'title' => '10. Technical Support',
+                'text' => 'Our support team is available via email and live chat to answer inquiries and resolve issues. We are committed to providing fast and professional responses to ensure customer satisfaction.',
+            ],
+            'amendments' => [
+                'title' => '11. Amendments',
+                'text' => 'Bebasata reserves the right to update or amend these Terms & Conditions at any time. Changes take effect immediately once published on the website. Continued use of the site constitutes acceptance of the updated terms.',
+            ],
+            'contact' => [
+                'title' => '12. Contact Us',
+                'text' => "You can reach the Bebasata team through the following channels:\n- Official email\n- Our verified Facebook page\n- Our verified Instagram page\n- Official WhatsApp number for customer service",
+            ],
+        ],
+
+        'features' => [
+            ['title' => 'High Quality', 'desc' => 'Official subscriptions'],
+            ['title' => 'Warranty Protection', 'desc' => 'For the entire subscription period'],
+            ['title' => 'Exclusive Deals', 'desc' => 'Special discounts for you'],
+            ['title' => '24 / 7 Support', 'desc' => 'Dedicated support'],
+        ],
+    ],
 ];

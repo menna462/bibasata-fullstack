@@ -204,4 +204,10 @@ return [
      'subscription_confirmed' => 'Subscription Confirmed',
     'thank_you_message' => 'Thank you for your purchase. Your subscription has been successfully activated. Check your email for the activation details or visit the My Subscriptions page to manage and track your plan.',
     'back_to_home' => 'Back to Home Page',
+    // 'home_details' => 'Show Now',
+    'our_products' => 'Our Products',
+    'home_details' => 'Show Details',
+    'like' => 'Like',
+    'share' => 'Share',
+    'show_more' => ' Show More',
 ];

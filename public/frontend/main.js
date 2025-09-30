@@ -348,3 +348,95 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+$(document).ready(function() {
+    // 1. استهداف أيقونة السلة (Badge) لإعادة تسمية الكلاس لسهولة الوصول
+    // في كودك: <span class="badge">{{ $cartCount }}</span>
+    // سنستهدفها الآن بكلاس موحد لتسهيل التحديث:
+    const $cartBadge = $('.icon-link .badge');
+
+    // 2. الاستماع لحدث النقر على زر الإضافة
+    $('.pro-add-to-cart').on('click', function(e) {
+        e.preventDefault();
+
+        const $button = $(this);
+        const durationPriceId = $button.data('duration-price-id');
+        const quantity = $button.data('quantity') || 1;
+        const url = $button.data('cart-url');
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+        // تحقق بسيط
+        if (!durationPriceId || durationPriceId === 0) {
+            console.error("Error: durationPriceId is missing or zero.");
+            alert("فشل الإضافة: لم يتم تحديد سعر المنتج.");
+            return;
+        }
+
+        // 3. إرسال طلب AJAX POST
+        $.ajax({
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                // إرسال البيانات المطلوبة بواسطة دالة add في الكنترولر
+                'duration_price_id': durationPriceId,
+                'quantity': quantity,
+                '_token': csrfToken // رمز الأمان
+            },
+            beforeSend: function() {
+                // تعطيل الزر أثناء عملية الإرسال
+                $button.prop('disabled', true).text('جارٍ الإضافة...');
+            },
+            success: function(response) {
+                // 4. معالجة الرد الناجح
+
+                // تحديث أيقونة السلة بالعدد الجديد المرسل من الكنترولر
+                if (response.cartCount !== undefined) {
+                    $cartBadge.text(response.cartCount);
+                    // إذا كان العدد أكبر من صفر، تأكد من إظهار الـ badge
+                    if (response.cartCount > 0) {
+                        $cartBadge.show();
+                    }
+                }
+
+                alert(response.message); // يمكنك استبدالها برسالة أفضل
+            },
+            error: function(xhr) {
+                // 5. معالجة الأخطاء
+                let errorMessage = 'فشل إضافة المنتج. يرجى إعادة المحاولة.';
+                if (xhr.status === 419) {
+                    errorMessage = 'انتهت صلاحية الجلسة، يرجى تحديث الصفحة.';
+                } else if (xhr.status === 422) {
+                    // خطأ التحقق (Validation)
+                    errorMessage = 'البيانات المرسلة غير صحيحة.';
+                }
+                console.error("AJAX Error:", xhr.responseText);
+                alert(errorMessage);
+            },
+            complete: function() {
+                $button.prop('disabled', false).text('Add to cart');
+            }
+        });
+    });
+});
+
+$(document).ready(function() {
+
+    // نستمع لحدث النقر على الأزرار التي تحمل الكلاس pro-go-to-details
+    // تم التعديل ليطابق الكلاس المستخدم في زر Blade (pro-go-to-details)
+    $('.pro-go-to-details').on('click', function(e) {
+
+        // نمنع أي سلوك افتراضي للعنصر
+        e.preventDefault();
+
+        // جلب مسار التفاصيل المخزن في السمة 'data-product-details-route'
+        const detailsRoute = $(this).data('product-details-route');
+
+        if (detailsRoute) {
+            // توجيه المتصفح إلى المسار المأخوذ من البيانات
+            window.location.href = detailsRoute;
+        } else {
+            // رسالة خطأ في حال عدم وجود المسار
+            console.error("خطأ: المسار الخاص بتفاصيل المنتج غير موجود على الزر.");
+        }
+    });
+});

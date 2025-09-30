@@ -15,7 +15,9 @@ class FrontendCategoryController extends Controller
         // جلب الفئات مع المنتجات
         $categories = Category::with('products')->get();
         $products = Product::all();
-        return view('include.shop', compact('categories', 'products'));
+         $currentLocale = App::getLocale();
+         $nameColumn = 'name_' . $currentLocale;
+        return view('include.shop', compact('categories', 'products','nameColumn','currentLocale'));
     }
     public function show($id)
     {

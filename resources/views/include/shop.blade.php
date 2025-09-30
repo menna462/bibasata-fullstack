@@ -79,38 +79,52 @@
 
     <div class="card-shop">
         <div class="container">
-            <div class="row g-4 justify-content-center mt-4" id="products">
-                <div class="col-6 col-md-3">
-                    <div class="pro-card">
-                        <img src="../image/card1.jpg" class="img-fluid" alt="Syltherine" />
+            <div class="row g-4 justify-content-center mt-4 {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}" id="products">
+                @foreach ($products as $product)
+                    @php
+                        $descriptionColumn = 'description_' . $currentLocale;
+                    @endphp
+                    <div class="col-6 col-md-3">
+                        <div class="pro-card">
+                            <img src="{{ asset('image/products/' . $product->image) }}" class="img-fluid"
+                                alt="{{ $product->{$nameColumn} ?? $product->name_en }}" />
 
-                        <span class="pro-badge pro-badge-new">New</span>
-                        <span class="pro-badge pro-badge-discount">-30%</span>
+                            <div class="pro-overlay">
+                                <div class="pro-hover-menu">
 
-                        <div class="pro-overlay">
-                            <div class="pro-hover-menu">
-                                <button class="btn pro-add-to-cart">Add to cart</button>
-                                <div class="pro-btn-actions">
-                                    <button class="btn pro-btn-icon">
-                                        <i class="fas fa-share-alt"></i>Share
-                                    </button>
-                                    <button class="btn pro-btn-icon">
-                                        <i class="far fa-heart"></i>Like
-                                    </button>
+                                    <a href="{{ route('product.details', ['id' => $product->id]) }}"
+                                        class="btn pro-go-to-details">
+                                        {{ __('language.home_details') }}
+                                    </a>
+
+                                    <div class="pro-btn-actions">
+                                        {{-- أيقونة المفضلة --}}
+                                        <button class="btn pro-btn-icon">
+                                            <i class="favorite-icon
+                                        @if (Auth::check() &&
+                                                Auth::user()->allFavorites()->where('favoritable_id', $product->id)->where('favoritable_type', 'App\Models\Product')->exists()) fas fa-heart favorited
+                                        @else far fa-heart @endif"
+                                                data-favoritable-id="{{ $product->id }}" data-favoritable-type="product">
+                                            </i>{{ __('language.like') }}
+                                        </button>
+
+                                        {{-- زر المشاركة --}}
+                                        <button class="btn pro-btn-icon">
+                                            <i class="fas fa-share-alt"></i> {{ __('language.share') }}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="pro-content">
-                            <div class="pro-title">Syltherine</div>
-                            <div class="pro-description">Stylish cafe chair</div>
-                            <div class="pro-price-group">
-                                <span class="pro-price-new">Rp 2.500.000</span>
-                                <span class="pro-price-old">Rp 3.500.000</span>
+                            <div class="pro-content">
+                                {{-- عرض اسم المنتج باللغة الحالية --}}
+                                <div class="pro-title">{{ $product->{$nameColumn} }}</div>
+                                {{-- عرض الوصف القصير باللغة الحالية فقط --}}
+                                <div class="pro-description">{{ $product->{$descriptionColumn} }}</div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endforeach
             </div>
 
             <div id="pagination"></div>

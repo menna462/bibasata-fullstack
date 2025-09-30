@@ -9,7 +9,8 @@
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Shop</a></li>
                 <li class="divider"></li>
-                <li class="current">Asgaard sofa</li>
+
+                <li class="current">{{ $product->{$nameColumn} }}</li>
             </ul>
         </div>
     </div>
@@ -52,8 +53,6 @@
                 </p>
                 <form action="{{ route('cart.add') }}" method="POST">
                     @csrf
-
-                    {{-- حقل مخفي لتمرير معرف المنتج --}}
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
 
                     <h5 class="duration-title mb-2">Duration</h5>
@@ -108,6 +107,7 @@
             Reviews
         </button>
     </div>
+
     <div class="container">
         <div id="descriptionContent" class="tab-content active">
             <p>
@@ -223,233 +223,62 @@
     <!-- card -->
     <div class="pro-section py-5">
         <div class="container">
-            <h2 class="text-center mb-5">Our Products</h2>
-            <div class="row g-4 justify-content-center">
-                <div class="col-6 col-md-3">
-                    <div class="pro-card">
-                        <img src="../image/card1.jpg" class="img-fluid" alt="Syltherine" />
+            <h2 class="text-center mb-5">{{ __('language.our_products') }}</h2>
+            <div class="row g-4 justify-content-center  {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}">
+                @foreach ($products as $product)
+                    @php
+                        $descriptionColumn = 'description_' . $currentLocale;
+                    @endphp
+                    <div class="col-6 col-md-3">
+                        <div class="pro-card">
+                            {{-- صورة المنتج --}}
+                            <img src="{{ asset('image/products/' . $product->image) }}" class="img-fluid"
+                                alt="{{ $product->{$nameColumn} ?? $product->name_en }}" />
 
-                        <span class="pro-badge pro-badge-new">New</span>
-                        <span class="pro-badge pro-badge-discount">-30%</span>
+                            <div class="pro-overlay">
+                                <div class="pro-hover-menu">
 
-                        <div class="pro-overlay">
-                            <div class="pro-hover-menu">
-                                <button class="btn pro-add-to-cart">Add to cart</button>
-                                <div class="pro-btn-actions">
-                                    <button class="btn pro-btn-icon">
-                                        <i class="fas fa-share-alt"></i>Share
-                                    </button>
-                                    <button class="btn pro-btn-icon">
-                                        <i class="far fa-heart"></i>Like
-                                    </button>
+                                    <a href="{{ route('product.details', ['id' => $product->id]) }}"
+                                        class="btn pro-go-to-details">
+                                        {{ __('language.home_details') }}
+                                    </a>
+
+                                    <div class="pro-btn-actions">
+                                        {{-- أيقونة المفضلة --}}
+                                        <button class="btn pro-btn-icon">
+                                            <i class="favorite-icon
+                                        @if (Auth::check() &&
+                                                Auth::user()->allFavorites()->where('favoritable_id', $product->id)->where('favoritable_type', 'App\Models\Product')->exists()) fas fa-heart favorited
+                                        @else far fa-heart @endif"
+                                                data-favoritable-id="{{ $product->id }}"
+                                                data-favoritable-type="product">
+                                            </i>{{ __('language.like') }}
+                                        </button>
+
+                                        {{-- زر المشاركة --}}
+                                        <button class="btn pro-btn-icon">
+                                            <i class="fas fa-share-alt"></i> {{ __('language.share') }}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="pro-content">
-                            <div class="pro-title">Syltherine</div>
-                            <div class="pro-description">Stylish cafe chair</div>
-                            <div class="pro-price-group">
-                                <span class="pro-price-new">Rp 2.500.000</span>
-                                <span class="pro-price-old">Rp 3.500.000</span>
+                            <div class="pro-content">
+                                <div class="pro-title">{{ $product->{$nameColumn} }}</div>
+                                <div class="pro-description">{{ $product->{$descriptionColumn} }}</div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="pro-card">
-                        <img src="../image/card1.jpg" class="img-fluid" alt="Lolito" />
-                        <span class="pro-badge pro-badge-new">New</span>
-                        <div class="pro-overlay">
-                            <div class="pro-hover-menu">
-                                <button class="btn pro-add-to-cart">Add to cart</button>
-                                <div class="pro-btn-actions">
-                                    <button class="btn pro-btn-icon">
-                                        <i class="fas fa-share-alt"></i>Share
-                                    </button>
-                                    <button class="btn pro-btn-icon">
-                                        <i class="far fa-heart"></i>Like
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pro-content">
-                            <div class="pro-title">Lolito</div>
-                            <div class="pro-description">Luxury big sofa</div>
-                            <div class="pro-price-group">
-                                <span class="pro-price-new">Rp 7.000.000</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="pro-card">
-                        <img src="../image/card1.jpg" class="img-fluid" alt="Product 3" />
-                        <span class="pro-badge pro-badge-discount">-20%</span>
-                        <div class="pro-overlay">
-                            <div class="pro-hover-menu">
-                                <button class="btn pro-add-to-cart">Add to cart</button>
-                                <div class="pro-btn-actions">
-                                    <button class="btn pro-btn-icon">
-                                        <i class="fas fa-share-alt"></i>Share
-                                    </button>
-                                    <button class="btn pro-btn-icon">
-                                        <i class="far fa-heart"></i>Like
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pro-content">
-                            <div class="pro-title">Product 3</div>
-                            <div class="pro-description">Short description here</div>
-                            <div class="pro-price-group">
-                                <span class="pro-price-new">Rp 1.200.000</span>
-                                <span class="pro-price-old">Rp 1.500.000</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="pro-card">
-                        <img src="../image/card1.jpg" class="img-fluid" alt="Product 4" />
-                        <div class="pro-overlay">
-                            <div class="pro-hover-menu">
-                                <button class="btn pro-add-to-cart">Add to cart</button>
-                                <div class="pro-btn-actions">
-                                    <button class="btn pro-btn-icon">
-                                        <i class="fas fa-share-alt"></i>Share
-                                    </button>
-                                    <button class="btn pro-btn-icon">
-                                        <i class="far fa-heart"></i>Like
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pro-content">
-                            <div class="pro-title">Product 4</div>
-                            <div class="pro-description">Another cool item</div>
-                            <div class="pro-price-group">
-                                <span class="pro-price-new">Rp 5.000.000</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="pro-card">
-                        <img src="../image/card1.jpg" class="img-fluid" alt="Product 5" />
-                        <span class="pro-badge pro-badge-new">New</span>
-                        <div class="pro-overlay">
-                            <div class="pro-hover-menu">
-                                <button class="btn pro-add-to-cart">Add to cart</button>
-                                <div class="pro-btn-actions">
-                                    <button class="btn pro-btn-icon">
-                                        <i class="fas fa-share-alt"></i>Share
-                                    </button>
-                                    <button class="btn pro-btn-icon">
-                                        <i class="far fa-heart"></i>Like
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pro-content">
-                            <div class="pro-title">Product 5</div>
-                            <div class="pro-description">Cool desk lamp</div>
-                            <div class="pro-price-group">
-                                <span class="pro-price-new">Rp 350.000</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="pro-card">
-                        <img src="../image/card1.jpg" class="img-fluid" alt="Product 6" />
-                        <div class="pro-overlay">
-                            <div class="pro-hover-menu">
-                                <button class="btn pro-add-to-cart">Add to cart</button>
-                                <div class="pro-btn-actions">
-                                    <button class="btn pro-btn-icon">
-                                        <i class="fas fa-share-alt"></i>Share
-                                    </button>
-                                    <button class="btn pro-btn-icon">
-                                        <i class="far fa-heart"></i>Like
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pro-content">
-                            <div class="pro-title">Product 6</div>
-                            <div class="pro-description">Stylish mug</div>
-                            <div class="pro-price-group">
-                                <span class="pro-price-new">Rp 150.000</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="pro-card">
-                        <img src="../image/card1.jpg" class="img-fluid" alt="Product 7" />
-                        <div class="pro-overlay">
-                            <div class="pro-hover-menu">
-                                <button class="btn pro-add-to-cart">Add to cart</button>
-                                <div class="pro-btn-actions">
-                                    <button class="btn pro-btn-icon">
-                                        <i class="fas fa-share-alt"></i>Share
-                                    </button>
-                                    <button class="btn pro-btn-icon">
-                                        <i class="far fa-heart"></i>Like
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pro-content">
-                            <div class="pro-title">Product 7</div>
-                            <div class="pro-description">Another stylish item</div>
-                            <div class="pro-price-group">
-                                <span class="pro-price-new">Rp 2.000.000</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="pro-card">
-                        <img src="../image/card1.jpg" class="img-fluid" alt="Product 8" />
-                        <span class="pro-badge pro-badge-new">New</span>
-                        <span class="pro-badge pro-badge-discount">-50%</span>
-                        <div class="pro-overlay">
-                            <div class="pro-hover-menu">
-                                <button class="btn pro-add-to-cart">Add to cart</button>
-                                <div class="pro-btn-actions">
-                                    <button class="btn pro-btn-icon">
-                                        <i class="fas fa-share-alt"></i>Share
-                                    </button>
-                                    <button class="btn pro-btn-icon">
-                                        <i class="far fa-heart"></i>Like
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pro-content">
-                            <div class="pro-title">Product 8</div>
-                            <div class="pro-description">A nice product</div>
-                            <div class="pro-price-group">
-                                <span class="pro-price-new">Rp 450.000</span>
-                                <span class="pro-price-old">Rp 900.000</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
             <div class="text-center mt-5">
-                <button class="btn pro-show-more-btn">Show More</button>
+                <a href="{{ route('shop') }}" class="btn pro-show-more-btn">
+                    {{ __('language.show_more') }}
+                </a>
             </div>
+
+
         </div>
     </div>
 @endsection

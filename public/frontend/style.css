@@ -52,12 +52,17 @@ a{
 .rtl-links h4,
 .rtl-links h5,
 .rtl-links p,
-.rtl-links li {
+.rtl-links li
+{
   direction: rtl;
   unicode-bidi: bidi-override;
-  text-align: right;
+  text-align: right !important;
 }
-
+.rtl-links .pro-content .pro-title,
+.rtl-links .pro-content .pro-description {
+    direction: rtl !important;
+    text-align: right !important;
+}
 .navbar {
     background-color: rgba(2, 48, 22, 1);
     height: 100px;
@@ -619,7 +624,24 @@ button {
     /* height: 48px; */
     border-radius: 0px;
 }
-
+.pro-hover-menu .pro-go-to-details {
+    background-color: #fff;
+    color: rgba(2, 48, 22, 1);
+    border: none;
+    font-family: Poppins;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 150%;
+    letter-spacing: 0%;
+    padding: 0.75rem 1.5rem;
+    /* width: 202px; */
+    /* height: 48px; */
+    border-radius: 0px;
+}
+.pro-hover-menu .pro-go-to-details:hover {
+    background-color: #1a4d2e;
+    color: #fff;
+}
 .pro-hover-menu .pro-add-to-cart:hover {
     background-color: #1a4d2e;
     color: #fff;
@@ -654,8 +676,7 @@ button {
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    text-align: right;
+    text-align: left;
     margin-top: -20px;
 }
 .pro-title {
@@ -2273,13 +2294,13 @@ p {
     width: 75%;
     padding: 5px;
     /* border: 1px solid #ddd; */
-    margin-left: 5px;
+    margin-right: 12px;
 }
 .search-input-container .search-btn {
     width: 20%;
     padding: 6px;
     border: none;
-    background-color: #007bff; /* لون مميز للزر */
+    background-color: #023016; /* لون مميز للزر */
     color: white;
     cursor: pointer;
 }

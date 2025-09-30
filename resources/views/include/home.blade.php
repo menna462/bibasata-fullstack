@@ -7,7 +7,7 @@
                 <div class="swiper-slide">
                     <img src="{{ asset('image/slider/' . $slider->image) }}" alt="" />
                     <div class="slide-content">
-                        <a href="#" class="call-to-action-button"> BUY NOW </a>
+                        <a href="{{ route('shop') }}" class="call-to-action-button"> BUY NOW </a>
                     </div>
                 </div>
             @endforeach
@@ -70,53 +70,61 @@
 
     <div class="pro-section py-5">
         <div class="container">
-            <h2 class="text-center mb-5">Our Products</h2>
-            <div class="row g-4 justify-content-center">
+            <h2 class="text-center mb-5">{{ __('language.our_products') }}</h2>
+            <div class="row g-4 justify-content-center  {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}">
                 @foreach ($products as $product)
+                    @php
+                        $descriptionColumn = 'description_' . $currentLocale;
+                    @endphp
                     <div class="col-6 col-md-3">
                         <div class="pro-card">
                             {{-- صورة المنتج --}}
                             <img src="{{ asset('image/products/' . $product->image) }}" class="img-fluid"
-                                alt="{{ $product->name_en }}" />
+                                alt="{{ $product->{$nameColumn} ?? $product->name_en }}" />
 
                             <div class="pro-overlay">
                                 <div class="pro-hover-menu">
-                                    <button class="btn pro-add-to-cart" data-product-id="{{ $product->id }}"
-                                        data-product-details-route="{{ route('product.details', ['id' => $product->id]) }}">
-                                        Add to cart
-                                    </button><a href="{{ route('product.details', ['id' => $product->id]) }}"
-                                        class="btn pro-add-to-cart">
-                                        Add to cart
+
+                                    <a href="{{ route('product.details', ['id' => $product->id]) }}"
+                                        class="btn pro-go-to-details">
+                                        {{ __('language.home_details') }}
                                     </a>
+
                                     <div class="pro-btn-actions">
                                         {{-- أيقونة المفضلة --}}
                                         <button class="btn pro-btn-icon">
                                             <i class="favorite-icon
-                                            @if (Auth::check() &&
-                                                    Auth::user()->allFavorites()->where('favoritable_id', $product->id)->where('favoritable_type', 'App\Models\Product')->exists()) fas fa-heart favorited
-                                            @else far fa-heart @endif"
+                                        @if (Auth::check() &&
+                                                Auth::user()->allFavorites()->where('favoritable_id', $product->id)->where('favoritable_type', 'App\Models\Product')->exists()) fas fa-heart favorited
+                                        @else far fa-heart @endif"
                                                 data-favoritable-id="{{ $product->id }}" data-favoritable-type="product">
-                                            </i>Like
+                                            </i>{{ __('language.like') }}
                                         </button>
 
                                         {{-- زر المشاركة --}}
                                         <button class="btn pro-btn-icon">
-                                            <i class="fas fa-share-alt"></i> Share
+                                            <i class="fas fa-share-alt"></i> {{ __('language.share') }}
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="pro-content">
-                                <div class="pro-title">{{ $product->name_en }}</div>
-                                <div class="pro-description">{{ $product->description_en }}</div>
+                                <div class="pro-title">{{ $product->{$nameColumn} }}</div>
+                                <div class="pro-description">{{ $product->{$descriptionColumn} }}</div>
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
+            <div class="text-center mt-5">
+                <a href="{{ route('shop') }}" class="btn pro-show-more-btn">
+                    {{ __('language.show_more') }}
+                </a>
+            </div>
         </div>
     </div>
+
 
 
     <div class="swiper products-swiper container-fluid">

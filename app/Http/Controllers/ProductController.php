@@ -23,40 +23,41 @@ class ProductController extends Controller
     }
 
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'images' => 'required|image|mimes:jpeg,png,jpg',
-            'name_en' => 'required|string',
-            'name_ar' => 'required|string',
-            'description_en' => 'required|string',
-            'description_ar' => 'required|string',
-            'long_description_en' => 'required|string',
-            'long_description_ar' => 'required|string',
-        ]);
-        $imageName = null;
+public function store(Request $request)
+{
+    $request->validate([
+        'category_id' => 'required|exists:categories,id',
+        // تم تغيير 'images' إلى 'image' في التحقق
+        'image' => 'required|image|mimes:jpeg,png,jpg',
+        'name_en' => 'required|string',
+        'name_ar' => 'required|string',
+        'description_en' => 'required|string',
+        'description_ar' => 'required|string',
+        'long_description_en' => 'required|string',
+        'long_description_ar' => 'required|string',
+    ]);
+    $imageName = null;
 
-        if ($request->hasFile('images')) {
-            $image = $request->file('images');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('image/products/'), $imageName);
-        }
-
-        Product::create([
-            "category_id" => $request->category_id,
-            "image" => $imageName, // اسم الصورة فقط بيتخزن
-            "name_en" => $request->name_en,
-            "name_ar" => $request->name_ar,
-            "description_en" => $request->description_en,
-            "description_ar" => $request->description_ar,
-            "long_description_en" => $request->long_description_en,
-            "long_description_ar" => $request->long_description_ar,
-
-        ]);
-
-        return redirect()->route("product")->with("message", "Created successfully");
+    // تم تغيير 'images' إلى 'image' عند جلب الملف
+    if ($request->hasFile('image')) {
+        $image = $request->file('image');
+        $imageName = time() . '_' . $image->getClientOriginalName();
+        $image->move(public_path('image/products/'), $imageName);
     }
+
+    Product::create([
+        "category_id" => $request->category_id,
+        "image" => $imageName,
+        "name_en" => $request->name_en,
+        "name_ar" => $request->name_ar,
+        "description_en" => $request->description_en,
+        "description_ar" => $request->description_ar,
+        "long_description_en" => $request->long_description_en,
+        "long_description_ar" => $request->long_description_ar,
+    ]);
+
+    return redirect()->route("product")->with("message", "Created successfully");
+}
 
 
     public function show(string $id)

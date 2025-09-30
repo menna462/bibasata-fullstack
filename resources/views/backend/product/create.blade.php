@@ -22,9 +22,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="images" class="form-label">Image</label>
-                        <input type="file" class="form-control" name="images" id="images">
-                        @error('images')
+                        <label for="image" class="form-label">Image</label>
+                        <input type="file" class="form-control" name="image" id="image">
+                        @error('image')
                             <div class="alert alert-danger mt-1">{{ $message }}</div>
                         @enderror
                     </div>
@@ -47,7 +47,7 @@
 
                     <div class="mb-3">
                         <label for="description_en" class="form-label">Short Description / Features (EN)</label>
-                        
+
                         <textarea name="description_en" id="description_en" rows="5" class="form-control">{{ old('description_en') }}</textarea>
                         <small class="form-text text-muted">Enter each feature on a new line.</small>
                         @error('description_en')

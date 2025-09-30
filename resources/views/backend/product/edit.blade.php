@@ -34,9 +34,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="images" class="form-label">Change Image</label>
-                        <input type="file" class="form-control" name="images" id="images">
-                        @error('images')
+                        <label for="image" class="form-label">Change Image</label>
+                        <input type="file" class="form-control" name="image" id="images">
+                        @error('image')
                             <div class="alert alert-danger mt-1">{{ $message }}</div>
                         @enderror
                     </div>

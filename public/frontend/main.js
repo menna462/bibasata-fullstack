@@ -317,19 +317,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // ===================================
         durationLabels.forEach(label => {
             label.addEventListener('click', function() {
-                // إزالة فئة 'active' من كل الأزرار
                 durationLabels.forEach(lbl => lbl.classList.remove('active'));
 
-                // إضافة فئة 'active' للزر الحالي
                 this.classList.add('active');
 
-                // الحصول على راديو الزر المقابل
                 const radioId = this.getAttribute('for');
                 const selectedRadio = document.getElementById(radioId);
 
                 if (selectedRadio) {
                     selectedRadio.checked = true;
-                    // تحديث السعر المعروض
                     updatePriceDisplay(selectedRadio.getAttribute('data-price'));
                 }
             });
@@ -337,8 +333,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function updatePriceDisplay(newPrice) {
             if (priceElement && newPrice !== null) {
-                // تنسيق السعر كعملة (افترضنا أنك تستخدم اللغتين الإنجليزية والعربية)
-                // يمكن تعديل التنسيق حسب العملة
                 const formattedPrice = parseFloat(newPrice).toLocaleString('en-US', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
@@ -421,22 +415,16 @@ $(document).ready(function() {
 
 $(document).ready(function() {
 
-    // نستمع لحدث النقر على الأزرار التي تحمل الكلاس pro-go-to-details
-    // تم التعديل ليطابق الكلاس المستخدم في زر Blade (pro-go-to-details)
     $('.pro-go-to-details').on('click', function(e) {
 
-        // نمنع أي سلوك افتراضي للعنصر
         e.preventDefault();
-
-        // جلب مسار التفاصيل المخزن في السمة 'data-product-details-route'
         const detailsRoute = $(this).data('product-details-route');
 
         if (detailsRoute) {
-            // توجيه المتصفح إلى المسار المأخوذ من البيانات
             window.location.href = detailsRoute;
         } else {
-            // رسالة خطأ في حال عدم وجود المسار
             console.error("خطأ: المسار الخاص بتفاصيل المنتج غير موجود على الزر.");
         }
     });
 });
+

@@ -95,10 +95,7 @@
             </div>
         </div>
     </div>
-
-
-
-
+    
     <div class="tab-buttons">
         <button class="tab-button active" onclick="showContent('descriptionContent', event)">
             Description

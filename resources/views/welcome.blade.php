@@ -269,7 +269,19 @@
     </script>
     <script src="{{ asset('frontend/main.js') }}"></script>
     <script>
-        
+        document.addEventListener('DOMContentLoaded', function() {
+    // تحديد جميع الروابط داخل قائمة الفلتر المنسدلة
+    const filterLinks = document.querySelectorAll('.filter-dropdown-menu .dropdown-item');
+
+    filterLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            // منع الإجراء الافتراضي للـ dropdown (وهو ما يفعله bootstrap)
+            e.stopPropagation();
+            // توجيه المتصفح إلى الرابط الموجود في href مباشرة
+            window.location.href = this.href;
+        });
+    });
+});
     </script>
 
 </body>

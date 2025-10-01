@@ -1,152 +1,117 @@
-@extends('index')
+@extends('welcome')
+
 @section('content')
-    <style>
-        .form-control {
-            width: 200px;
-            height: 40px;
-        }
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}">
+            <ul>
+                <li><a href="{{ route('home') }}">{{ __('language.home') }}</a></li>
+                <li><a href="{{ route('shop') }}">{{ __('language.Shop') }}</a></li>
+                <li class="divider"></li>
+                <li class="current">{{ $bundle->$nameColumn }}</li>
+            </ul>
+        </div>
+    </div>
 
-        .discount-circle {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #ff4500; /* لون أحمر */
-            color: white;
-            border-radius: 50%; /* لجعل الشكل دائرياً */
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            z-index: 10;
-        }
-    </style>
     <div class="container my-5">
-        <div class="bundle-container">
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="bundle-image">
-                        @if ($bundle->discount_percentage > 0)
-                            <div class="discount-circle">-{{ $bundle->discount_percentage }}%</div>
-                        @endif
-                        <img src="{{ asset('image/products/' . $bundle->image) }}" alt="{{ $bundle->name_en }}"
-                            class="img-fluid" />
-                    </div>
-                </div>
-                <div class="col-md-7">
-                    <div class="bundle-details text-center">
-                        <h2>{{ $bundle->name }}</h2>
+        <div class="row product-page-card rounded-4 p-4">
 
-                        <p class="features">
-                            @if ($bundle->short_description)
-                                @foreach (explode("\n", $bundle->short_description) as $feature)
-                                    @if (trim($feature) !== '')
-                                        &#x2714; {{ trim($feature) }}<br>
-                                    @endif
-                                @endforeach
-                            @else
-                                <p>No specific features listed for this bundle.</p>
-                            @endif
-                        </p>
+            {{-- الصور --}}
+            <div class="col-lg-5 p-3 d-flex justify-content-center flex-column align-items-center">
+                <div class="card product-card border-0 rounded-4 mb-3">
+                    @php
+                        $firstImage = is_array($bundle->image) && count($bundle->image) > 0 ? $bundle->image[0] : null;
+                    @endphp
 
-                        <form method="POST" action="{{ route('cart.add') }}" id="add-to-cart-form" class="w-100 mb-3"
-                            style="display: flex; flex-direction: column; align-items: center;">
-                            @csrf
-                            <div class="row align-items-center mb-3">
-                                <div class="col-md-6 col-lg-5 mx-auto">
-                                    <label for="period" class="text-center w-100">Period:</label>
-                                    <div class="d-flex justify-content-center">
-                                        <select id="period" name="duration_price_id"
-                                            class="form-control form-control-sm w-auto">
-                                            @if ($bundle->durations->isNotEmpty())
-                                                @foreach ($bundle->durations->sortBy('duration_in_months') as $duration)
-                                                    <option value="{{ $duration->id }}" data-price="{{ $duration->price }}"
-                                                        {{ $loop->first ? 'selected' : '' }}>
-                                                        {{ $duration->duration_in_months }}
-                                                        {{ $duration->duration_in_months == 1 ? 'month' : 'months' }}
-                                                        ({{ number_format($duration->price, 2) }}
-                                                        @if (App::getLocale() == 'ar')
-                                                            جنيه
-                                                        @else
-                                                            $
-                                                        @endif)
-                                                    </option>
-                                                @endforeach
-                                            @else
-                                                <option value="">No periods available for this bundle</option>
-                                            @endif
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <input type="hidden" name="quantity" id="quantity_input_hidden" value="1">
-
-                            @if (session('success'))
-                                <div class="alert alert-success alert-dismissible fade show w-100" role="alert">
-                                    {{ session('success') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                                </div>
-                            @endif
-
-                            @if (session('error'))
-                                <div class="alert alert-danger alert-dismissible fade show w-100" role="alert">
-                                    {{ session('error') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                                </div>
-                            @endif
-
-                            @if ($errors->any())
-                                <div class="alert alert-danger alert-dismissible fade show w-100" role="alert">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                                </div>
-                            @endif
-
-                            <button type="submit" class="btn btn-success add-to-cart w-100">Add to Cart</button>
-                        </form>
-
-                        <div class="wishlist-share d-flex justify-content-between align-items-center">
-                            <span class="wishlist">
-                                <i class="favorite-icon
-                                    @if (Auth::check() &&
-                                            Auth::user()->allFavorites()->where('favoritable_id', $bundle->id)->where('favoritable_type', 'App\Models\Bundle')->exists()) fas fa-heart favorited
-                                    @else
-                                        far fa-heart @endif
-                                    "
-                                    data-favoritable-id="{{ $bundle->id }}" data-favoritable-type="bundle"></i>
-                                Add to Wishlist
-                            </span>
-                            <div class="share-icons">
-                                <span>Share:</span>
-                                <a href="https://www.facebook.com/simplysoft.aii"><i class="fab fa-facebook-f"></i></a>
-                                <a href="https://www.instagram.com/simplysoft.ai"><i class="fab fa-instagram"></i></a>
-                                <a href="https://wsend.co/201023290446"><i class="fa-brands fa-whatsapp"></i></a>
-                            </div>
-                        </div>
-                    </div>
+                    @if ($firstImage)
+                        <img src="{{ asset('image/products/' . $firstImage) }}" class="card-img-top rounded-4"
+                            alt="{{ $bundle->$nameColumn }}">
+                    @else
+                        <span class="text-danger">No Image</span>
+                    @endif
                 </div>
             </div>
-            <hr class="my-5" />
-            <div class="bundle-description">
-                <h2 class="description-title text-center mb-4">Bundle Description</h2>
-                <div class="container">
 
-                    @if ($bundle->long_description)
-                        {!! nl2br(e($bundle->long_description)) !!}
+            {{-- تفاصيل الباندل --}}
+            <div class="col-lg-7 p-3 d-flex flex-column {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}">
+                <div class="d-flex mb-3 des-ti">
+                    <h1 class="product-title">{{ $bundle->$nameColumn }}</h1>
+                </div>
+
+                {{-- السعر --}}
+                <h2 class="product-price" id="current-price">
+                    @if ($bundle->durations->isNotEmpty())
+                        {{ number_format($bundle->durations->first()->price ?? 0, 2) }}
+                        @if ($currentLocale == 'ar')
+                            جنيه
+                        @else
+                            $
+                        @endif
                     @else
-                        <p>No detailed description available for this bundle.</p>
+                        {{ __('language.no_price') }}
                     @endif
+                </h2>
+
+                {{-- التقييم (ثابت حالياً) --}}
+                <div class="d-flex align-items-center mb-4 start-code">
+                    <span class="text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </span>
+                    <span class="ms-2 customer-reviews">1 {{ __('language.customer_review') }}</span>
+                </div>
+
+                {{-- الوصف --}}
+                <p class="product-description mb-4">
+                    {{ $bundle->$shortDescColumn ?? __('language.no_description') }}
+                </p>
+
+                {{-- الفورم --}}
+                <form action="{{ route('cart.add') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="bundle_id" value="{{ $bundle->id }}">
+
+                    <h5 class="duration-title mb-2">{{ __('language.duration') }}</h5>
+                    <div class="d-flex duration-options-container flex-wrap mb-4" role="group"
+                        aria-label="Duration options">
+
+                        @foreach ($bundle->durations as $duration)
+                            <input type="radio" id="duration-{{ $duration->id }}" name="duration_id"
+                                value="{{ $duration->id }}" data-price="{{ $duration->price }}" required
+                                class="d-none duration-radio" @if ($loop->first) checked @endif>
+                            <label for="duration-{{ $duration->id }}"
+                                class="btn btn-outline-secondary duration-option @if ($loop->first) active @endif">
+                                {{ $duration->duration_in_months }}
+                                {{ $duration->duration_in_months == 1 ? __('language.month') : __('language.months') }}
+                            </label>
+                        @endforeach
+                    </div>
+
+                    {{-- الكمية --}}
+                    <div class="d-flex align-items-center qu-custom mb-4 gap-2 mt-3">
+                        <div class="input-group custom-quantity-selector">
+                            <button class="btn custom-quantity-btn" type="button" data-action="decrement">-</button>
+                            <input type="text" name="quantity" class="form-control text-center custom-quantity-input"
+                                value="1" min="1" readonly />
+                            <button class="btn custom-quantity-btn" type="button" data-action="increment">+</button>
+                        </div>
+
+                        <button class="btn custom-add-to-cart-btn" type="submit">
+                            {{ __('language.add_to_cart') }}
+                        </button>
+                    </div>
+                </form>
+
+                <hr />
+
+                {{-- بيانات إضافية --}}
+                <div class="product-meta mt-4">
+                    <p style="color: #000">
+                        {{ $bundle->{'long_description_' . app()->getLocale()} ?? __('language.no_description') }}
+                    </p>
                 </div>
             </div>
         </div>

@@ -40,7 +40,17 @@
                             <tr>
 
                                 <td>{{ $bundel->category_id ?? 'N/A' }}</td>
-                                <td><img src="{{ asset('image/products/' . $bundel->image) }}" width="100" alt="Bundle Image">
+                                <td>
+                                    @if (is_array($bundel->image) && count($bundel->image) > 0)
+                                        <div class="d-flex flex-wrap justify-content-center gap-2">
+                                            @foreach ($bundel->image as $imageName)
+                                                <img src="{{ asset('image/products/' . $imageName) }}" width="80"
+                                                    alt="Bundle Image" style="border: 1px solid #fff; margin-bottom: 5px;">
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <span class="text-warning">No Image Found</span>
+                                    @endif
                                 </td>
                                 <td>{{ $bundel->name_en }}</td>
                                 <td>{{ $bundel->name_ar }}</td>

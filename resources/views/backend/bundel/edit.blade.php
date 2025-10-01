@@ -8,8 +8,20 @@
                     <input type="hidden" name="old_id" value="{{ $result->id }}">
 
 
-                    <label>Current Image</label><br>
-                    <img src="{{ asset('image/products/' . $result->image) }}" width="100"><br><br>
+                    <label>Current Images</label><br>
+                    <div class="d-flex flex-wrap gap-3 mb-4">
+                        @if (is_array($result->image) && count($result->image) > 0)
+                            @foreach ($result->image as $imageName)
+                                <div class="image-preview position-relative">
+                                    <img src="{{ asset('image/products/' . $imageName) }}" width="100" style="border: 1px solid #ddd;">
+                                    {{-- ملاحظة: تنفيذ حذف صورة فردية يتطلب endpoint إضافي في الكنترولر --}}
+                                    {{-- <a href="#" class="btn btn-sm btn-danger position-absolute top-0 end-0" style="z-index: 1;">X</a> --}}
+                                </div>
+                            @endforeach
+                        @else
+                            <p class="text-muted">No images currently uploaded.</p>
+                        @endif
+                    </div>
 
                     <label>Change Image</label>
                     <input type="file" class="form-control" name="image">

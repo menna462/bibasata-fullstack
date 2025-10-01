@@ -21,13 +21,14 @@ class FrontendController extends Controller
         $bundles = Bundle::take(3)->get();
          $sliders = Slider::get();
          $currentLocale = App::getLocale();
+         $descColumn = 'short_description_' . $currentLocale;
          $nameColumn = 'name_' . $currentLocale;
         $comments = Comment::where('page_name', 'homepage')
             ->with('user')
             ->latest()
             ->get();
 
-        return view('include.home', compact('categories', 'products', 'bundles', 'comments','sliders','nameColumn','currentLocale')); // <--- إضافة 'comments' هنا
+        return view('include.home', compact('categories', 'products', 'bundles', 'comments','sliders','nameColumn','currentLocale','descColumn')); // <--- إضافة 'comments' هنا
     }
 
     public function show($id)
@@ -40,14 +41,27 @@ class FrontendController extends Controller
         return view('include.productdetails', compact('products','product', 'categories','nameColumn','currentLocale'));
     }
 
-    public function showBundelDetails($id)
-    {
-        $categories = Category::with('products')->get();
-        //  $currentLocale = App::getLocale();
-        //  $nameColumn = 'name_' . $currentLocale;
-        $bundle = Bundle::findOrFail($id);
-        return view('include.bundeldetails', compact('bundle', 'categories',));
-    }
+public function showBundelDetails($id)
+{
+    $categories = Category::with('products')->get();
+    $bundle = Bundle::with(['durations', 'category'])->findOrFail($id);
+
+    $currentLocale = App::getLocale();
+    $shortDescColumn = 'short_description_' . $currentLocale;
+    $longDescColumn  = 'long_description_' . $currentLocale;
+    $nameColumn      = 'name_' . $currentLocale;
+
+    return view('include.bundeldetails', compact(
+        'bundle',
+        'categories',
+        'currentLocale',
+        'shortDescColumn',
+        'longDescColumn',
+        'nameColumn'
+    ));
+}
+
+
 
  public function search(Request $request)
 {

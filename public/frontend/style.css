@@ -46,6 +46,10 @@ a{
 .rtl-links .form-custom-btn {
   float: right;
 }
+.rtl-links input,
+.rtl-links textarea {
+  direction: rtl;
+}
 .rtl-links h1,
 .rtl-links h2,
 .rtl-links h3,
@@ -59,9 +63,20 @@ a{
   text-align: right !important;
 }
 .rtl-links .pro-content .pro-title,
-.rtl-links .pro-content .pro-description {
+.rtl-links .pro-content .pro-description 
+ {
     direction: rtl !important;
     text-align: right !important;
+}
+.rtl-links .des-ti .product-title{
+    width: 100%;
+        direction: rtl !important;
+    text-align: right !important;
+}
+.rtl-links .qu-custom ,
+.rtl-links .start-code
+ {
+  flex-direction: row-reverse !important;
 }
 .navbar {
     background-color: rgba(2, 48, 22, 1);
@@ -1048,6 +1063,7 @@ footer {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 70px;
 }
 .products-button-prev.swiper-button-prev:after,
 .products-button-next.swiper-button-next:after {

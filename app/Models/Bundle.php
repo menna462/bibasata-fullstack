@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
+
 class Bundle extends Model
 {
     use HasFactory;
@@ -37,7 +38,7 @@ class Bundle extends Model
     {
         return $this->hasMany(DurationPrice::class);
     }
-     public function favoritedByUsers()
+    public function favoritedByUsers()
     {
         return $this->morphToMany(User::class, 'favoritable', 'favorites');
     }
@@ -58,9 +59,11 @@ class Bundle extends Model
         $locale = App::getLocale();
         return $this->{'long_description_' . $locale} ?? $this->long_description_en;
     }
-        public function orders()
+    public function orders()
     {
         return $this->hasMany(Order::class);
     }
-
+    protected $casts = [
+        'image' => 'array', // 💡 هذا هو الحل. يجب أن يكون نوع الحقل 'array'.
+    ];
 }

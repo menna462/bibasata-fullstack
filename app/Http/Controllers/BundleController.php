@@ -33,7 +33,8 @@ class BundleController extends Controller
     {
         $request->validate([
             // 'category_id' => 'required|exists:categories,id',
-            'images' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'images' => 'required|array', // يجب أن يكون حقل الصور مصفوفة
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048', // قواعد التحقق لكل صورة (2MB كحد أقصى)
             'name_en' => 'required|string',
             'name_ar' => 'required|string',
             'short_description_en' => 'required|string',
@@ -41,20 +42,21 @@ class BundleController extends Controller
             'long_description_en' => 'required|string',
             'long_description_ar' => 'required|string',
             'discount_percentage' => 'nullable|integer|min:0|max:100',
-
         ]);
 
-        $imageName = null;
+        $imageNames = [];
 
         if ($request->hasFile('images')) {
-            $image = $request->file('images');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('image/products/'), $imageName);
+            foreach ($request->file('images') as $image) {
+                // إضافة uniqid لضمان اسم فريد للصورة
+                $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('image/products/'), $imageName);
+                $imageNames[] = $imageName;
+            }
         }
 
         Bundle::create([
-            // "category_id" => $request->category_id,
-            "image" => $imageName, // اسم الصورة فقط بيتخزن
+            "image" => $imageNames, // سيتم تحويل هذه المصفوفة إلى JSON تلقائيًا بفضل الـ $casts
             "name_en" => $request->name_en,
             "name_ar" => $request->name_ar,
             "short_description_en" => $request->short_description_en,
@@ -62,8 +64,6 @@ class BundleController extends Controller
             "long_description_en" => $request->long_description_en,
             "long_description_ar" => $request->long_description_ar,
             "discount_percentage" => $request->discount_percentage,
-
-
         ]);
 
         return redirect()->route("bundel")->with("message", "Created successfully");
@@ -94,49 +94,52 @@ class BundleController extends Controller
     public function update(Request $request)
     {
         $old_id = $request->old_id;
-        $bundel = Bundle::findOrFail(id: $old_id);
+        $bundel = Bundle::findOrFail($old_id);
 
-        $request->validate([
+        $rules = [
             'discount_percentage' => 'nullable|integer|min:0|max:100',
-        ]);
-        if ($request->hasFile('image')) {
-            if (file_exists(public_path('image/products/' . $bundel->image))) {
-                unlink(public_path('image/products/' . $bundel->image)); // حذف الصورة القديمة من السيرفر
+        ];
+
+        if ($request->hasFile('images')) {
+            $rules['images'] = 'required|array';
+            $rules['images.*'] = 'image|mimes:jpeg,png,jpg,webp|max:2048';
+        }
+
+        $request->validate($rules);
+
+        $updateData = [
+            "name_en" => $request->name_en,
+            "name_ar" => $request->name_ar,
+            "short_description_en" => htmlspecialchars($request->short_description_en, ENT_QUOTES, 'UTF-8'),
+            "short_description_ar" => htmlspecialchars($request->short_description_ar, ENT_QUOTES, 'UTF-8'),
+            "long_description_en" => htmlspecialchars($request->long_description_en, ENT_QUOTES, 'UTF-8'),
+            "long_description_ar" => htmlspecialchars($request->long_description_ar, ENT_QUOTES, 'UTF-8'),
+            "discount_percentage" => $request->discount_percentage,
+        ];
+
+        if ($request->hasFile('images')) {
+            $old_images = $bundel->image; // ستكون مصفوفة بفضل الـ $casts
+
+            if (is_array($old_images)) {
+                foreach ($old_images as $old_imageName) {
+                    $filePath = public_path('image/products/' . $old_imageName);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
             }
 
-            // رفع الصورة الجديدة
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('image/products/'), $imageName); // حفظ الصورة في المسار
+            $newImageNames = [];
+            foreach ($request->file('images') as $image) {
+                $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('image/products/'), $imageName);
+                $newImageNames[] = $imageName;
+            }
 
-            // تحديث المنتج مع الصورة الجديدة
-            $bundel->update([
-                // "category_id" => $request->category_id,
-                "image" => $imageName, // تحديث اسم الصورة فقط
-                "name_en" => $request->name_en,
-                "name_ar" => $request->name_ar,
-                "short_description_en" => htmlspecialchars($request->short_description_en, ENT_QUOTES, 'UTF-8'),
-                "short_description_ar" => htmlspecialchars($request->short_description_ar, ENT_QUOTES, 'UTF-8'),
-                "long_description_en" => htmlspecialchars($request->long_description_en, ENT_QUOTES, 'UTF-8'),
-                "long_description_ar" => htmlspecialchars($request->long_description_ar, ENT_QUOTES, 'UTF-8'),
-                "discount_percentage" => $request->discount_percentage,
-
-
-            ]);
-        } else {
-            // إذا مفيش صورة جديدة، بس حدّث باقي البيانات
-            $bundel->update([
-                // "category_id" => $request->category_id,
-                "name_en" => $request->name_en,
-                "name_ar" => $request->name_ar,
-                "short_description_en" => htmlspecialchars($request->short_description_en, ENT_QUOTES, 'UTF-8'),
-                "short_description_ar" => htmlspecialchars($request->short_description_ar, ENT_QUOTES, 'UTF-8'),
-                "long_description_en" => htmlspecialchars($request->long_description_en, ENT_QUOTES, 'UTF-8'),
-                "long_description_ar" => htmlspecialchars($request->long_description_ar, ENT_QUOTES, 'UTF-8'),
-                "discount_percentage" => $request->discount_percentage,
-
-            ]);
+            $updateData["image"] = $newImageNames;
         }
+
+        $bundel->update($updateData);
 
         return redirect()->route("bundel")->with("message", "updated successfuly");
     }

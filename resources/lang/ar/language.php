@@ -208,4 +208,15 @@ return [
     'like' => 'إضافة للمفضلة',
     'share' => 'مشاركة',
     'show_more' => 'عرض المزيد',
+    'explore_more' => 'اكتشف المزيد',
+       'no_price' => 'لا يوجد سعر متاح',
+    'customer_review' => 'تقييم عميل',
+    'no_description' => 'لا يوجد وصف',
+    'duration' => 'المدة',
+    'month' => 'شهر',
+    'months' => 'شهور',
+    'add_to_cart' => 'أضف إلى السلة',
+    'bundle_code' => 'كود الباندل',
+    'category' => 'الفئة',
+
 ];

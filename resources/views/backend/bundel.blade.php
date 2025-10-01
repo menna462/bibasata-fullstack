@@ -49,10 +49,18 @@
                             @foreach ($bundel as $item)
                                 <tr>
                                     <td>{{ $item->id }}</td>
-                                    <td>
-                                        <img src="{{ asset('image/products/' . $item->image) }}" width="100"
+                                 <td>
+                                        @php
+                                        $firstImage = is_array($item->image) && count($item->image) > 0 ? $item->image[0] : null;
+                                    @endphp
+
+                                    @if ($firstImage)
+                                        <img src="{{ asset('image/products/' . $firstImage) }}" width="100"
                                             alt="Product Image">
-                                    </td>
+                                    @else
+                                        <span class="text-danger">No Image</span>
+                                    @endif
+                                </td>
                                     <td>{{ $item->name_en }}</td>
                                     <td>{{ $item->name_ar }}</td>
                                     <td class="description">{{ Str::limit($item->short_description_en, 20) }}</td>

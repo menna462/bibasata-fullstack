@@ -36,46 +36,44 @@
         </div>
     </div>
 
-<div class="filter-bar row justify-content-center text-center">
-    <div class="left-section col-12 col-md-6 d-flex justify-content-center align-items-center mb-3 mb-md-0">
-        <div class="filter-dropdown dropdown me-3">
-            <button class="filter-option dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                <i class="fas fa-sliders-h"></i>
-                <span>Filter</span>
-            </button>
+    <div class="filter-bar row justify-content-center text-center">
+        <div class="left-section col-12 col-md-6 d-flex justify-content-center align-items-center mb-3 mb-md-0">
+            <div class="filter-dropdown dropdown me-3">
+                <button class="filter-option dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Filter</span>
+                </button>
 
-            <ul class="filter-dropdown-menu dropdown-menu" data-bs-auto-close="true">
-                @foreach ($categories as $category)
-                    <li>
-                        <a class="dropdown-item" href="{{ route('category.products', $category->id) }}">
-                            {{ $category->$nameColumn }}
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
+                <ul class="filter-dropdown-menu dropdown-menu" data-bs-auto-close="true">
+                    @foreach ($categories as $category)
+                        <li>
+                            <a class="dropdown-item" href="{{ route('category.products', $category->id) }}">
+                                {{ $category->$nameColumn }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+            <div class="vertical-divider"></div>
+            <span class="results-text ms-3">Showing 1-16 of 32 results</span>
         </div>
-        <div class="vertical-divider"></div>
-        <span class="results-text ms-3">Showing 1-16 of 32 results</span>
-    </div>
 
-    <div class="right-section col-12 col-md-6 d-flex justify-content-center align-items-center">
-        <p class="show-button mb-0 me-2">Show</p>
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                16
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" href="#">10</a></li>
-                <li><a class="dropdown-item" href="#">16</a></li>
-                <li><a class="dropdown-item" href="#">32</a></li>
-            </ul>
+        <div class="right-section col-12 col-md-6 d-flex justify-content-center align-items-center">
+            <p class="show-button mb-0 me-2">Show</p>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    16
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="#">10</a></li>
+                    <li><a class="dropdown-item" href="#">16</a></li>
+                    <li><a class="dropdown-item" href="#">32</a></li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
-
-
     <div class="card-shop">
         <div class="container">
             <div class="row g-4 justify-content-center mt-4 {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}"

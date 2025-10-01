@@ -19,11 +19,14 @@
                     @csrf
 
 
-                    <label>Image</label>
-                    <input type="file" class="form-control" name="images">
-                    @error('images')
-                        <div class="alert-custom">{{ $message }}</div>
-                    @enderror
+                <label>Images</label>
+                <input type="file" class="form-control" name="images[]" multiple>
+                @error('images')
+                    <div class="alert-custom">{{ $message }}</div>
+                @enderror
+                @error('images.*')
+                    <div class="alert-custom">{{ $message }}</div>
+                @enderror
 
                     <label>Name (EN)</label>
                     <input type="text" class="form-control" name="name_en">

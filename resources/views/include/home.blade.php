@@ -127,64 +127,56 @@
 
 
 
-    <div class="swiper products-swiper container-fluid">
-        <div class="swiper-wrapper">
-            <!-- Slide 1 -->
+<div class="swiper products-swiper container-fluid">
+    <div class="swiper-wrapper">
+
+        @foreach ($bundles as $bundle)
+            @php
+                $name = $bundle->$nameColumn;
+                $description = $bundle->$descColumn;
+
+                $firstImage = is_array($bundle->image) && count($bundle->image) > 0 ? $bundle->image[0] : 'default_bundle.jpg';
+                $secondImage = is_array($bundle->image) && count($bundle->image) > 1 ? $bundle->image[1] : $firstImage;
+            @endphp
+
             <div class="swiper-slide">
                 <div class="slide-inner">
                     <div class="slide-content">
-                        <h3 class="slide-title">Adobe Creative Cloud</h3>
+                        {{-- العنوان بناءً على اللغة المحددة --}}
+                        <h3 class="slide-title">{{ $name }}</h3>
+
+                        {{-- الوصف القصير بناءً على اللغة المحددة --}}
                         <p class="slide-desc">
-                            Our designer already made a lot of beautiful prototipe of rooms
-                            that inspire you
+                            {{ $description }}
                         </p>
-                        <a href="#" class="call-to-action-button">Explore More</a>
+
+                        {{-- زر يوجه إلى صفحة تفاصيل المنتج باستخدام الترجمة --}}
+                        <a href="{{ route('bundle.details', $bundle->id) }}" class="call-to-action-button">
+                            {{ __('language.explore_more') }}
+                        </a>
                     </div>
 
                     <div class="slide-images">
-                        <!-- الصورة الكبيرة -->
+                        <!-- الصورة الكبيرة: نستخدم الصورة الأولى -->
                         <div class="large-image">
-                            <img src="{{ asset('frontend/image/bundle.jpg') }}" alt="Product Large" />
+                            <img src="{{ asset('image/products/' . $firstImage) }}" alt="{{ $name }} Large Image" />
                         </div>
 
-                        <!-- الصورة الصغيرة -->
+                        <!-- الصورة الصغيرة: نستخدم الصورة الثانية -->
                         <div class="small-image">
-                            <img src="{{ asset('frontend/image/bundle.jpg') }}" alt="Product Small" />
+                            <img src="{{ asset('image/products/' . $secondImage) }}" alt="{{ $name }} Small Image" />
                         </div>
                     </div>
                 </div>
             </div>
+        @endforeach
 
-            <!-- Slide 2 -->
-            <div class="swiper-slide">
-                <div class="slide-inner">
-                    <div class="slide-content">
-                        <h3 class="slide-title">Adobe Creative Cloud</h3>
-                        <p class="slide-desc">
-                            Our designer already made a lot of beautiful prototipe of rooms
-                            that inspire you
-                        </p>
-                        <a href="#" class="call-to-action-button">Explore More</a>
-                    </div>
-
-                    <div class="slide-images">
-                        <!-- الصورة الكبيرة -->
-                        <div class="large-image">
-                            <img src="{{ asset('frontend/image/bundle.jpg') }}" alt="Product Large" />
-                        </div>
-
-                        <!-- الصورة الصغيرة -->
-                        <div class="small-image">
-                            <img src="{{ asset('frontend/image/bundle.jpg') }}" alt="Product Small" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pagination & Navigation -->
-        <div class="swiper-pagination products-pagination"></div>
-        <div class="swiper-button-prev products-button-prev"></div>
-        <div class="swiper-button-next products-button-next"></div>
     </div>
+
+    <!-- Pagination & Navigation -->
+    <div class="swiper-pagination products-pagination"></div>
+    <div class="swiper-button-prev products-button-prev"></div>
+    <div class="swiper-button-next products-button-next"></div>
+</div>
+
 @endsection

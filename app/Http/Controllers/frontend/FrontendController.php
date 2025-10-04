@@ -18,6 +18,11 @@ class FrontendController extends Controller
 {
     public function index()
     {
+        if (env('MAINTENANCE_MODE') === 'true' && !auth()->check()) {
+            return view('include.error');
+        }
+
+
         $categories = Category::with('products')->get();
         $products = Product::latest()->take(8)->get();
         $bundles = Bundle::take(3)->get();
@@ -67,6 +72,7 @@ class FrontendController extends Controller
             'nameColumn'
         ));
     }
+    
 
 
 

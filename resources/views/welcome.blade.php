@@ -26,31 +26,34 @@
     <title>home</title>
     <style>
         .icon-link {
-    display: inline-block;
-    position: relative;
-    font-size: 1.5rem;
-    color: #343a40; /* لون الأيقونة */
-    transition: color 0.3s;
-}
+            display: inline-block;
+            position: relative;
+            font-size: 1.5rem;
+            color: #343a40;
+            /* لون الأيقونة */
+            transition: color 0.3s;
+        }
 
-.icon-link:hover {
-    color: #007bff; /* لون عند التحويم */
-}
+        .icon-link:hover {
+            color: #007bff;
+            /* لون عند التحويم */
+        }
 
-.icon-link .badge {
-    position: absolute;
-    /* في نظام RTL، نضع العداد في الزاوية العلوية اليسرى */
-    top: -8px;
-    left: -8px;
-    padding: 3px 6px;
-    border-radius: 50%;
-    background-color: #dc3545; /* لون أحمر مميز */
-    color: white;
-    font-size: 0.75rem;
-    font-weight: bold;
-    line-height: 1;
-    z-index: 10;
-}
+        .icon-link .badge {
+            position: absolute;
+            /* في نظام RTL، نضع العداد في الزاوية العلوية اليسرى */
+            top: -8px;
+            left: -8px;
+            padding: 3px 6px;
+            border-radius: 50%;
+            background-color: #dc3545;
+            /* لون أحمر مميز */
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            line-height: 1;
+            z-index: 10;
+        }
     </style>
 </head>
 
@@ -74,11 +77,22 @@
 
                     @auth
                         <li><a href="{{ route('profile.show') }}">{{ __('language.Profile') }}</a></li>
-                        <li><a href="{{ route('logout') }}">{{ __('language.Logout') }}</a></li>
+
+                        <li>
+                            <a href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                {{ __('language.Logout') }}
+                            </a>
+                        </li>
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
                     @else
                         <li><a href="{{ route('login') }}">{{ __('language.Login') }}</a></li>
                         <li><a href="{{ route('register') }}">{{ __('language.Register') }}</a></li>
                     @endauth
+
 
                 </ul>
             </div>
@@ -298,19 +312,18 @@
     <script src="{{ asset('frontend/main.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-    // تحديد جميع الروابط داخل قائمة الفلتر المنسدلة
-    const filterLinks = document.querySelectorAll('.filter-dropdown-menu .dropdown-item');
+            // تحديد جميع الروابط داخل قائمة الفلتر المنسدلة
+            const filterLinks = document.querySelectorAll('.filter-dropdown-menu .dropdown-item');
 
-    filterLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            // منع الإجراء الافتراضي للـ dropdown (وهو ما يفعله bootstrap)
-            e.stopPropagation();
-            // توجيه المتصفح إلى الرابط الموجود في href مباشرة
-            window.location.href = this.href;
+            filterLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // منع الإجراء الافتراضي للـ dropdown (وهو ما يفعله bootstrap)
+                    e.stopPropagation();
+                    // توجيه المتصفح إلى الرابط الموجود في href مباشرة
+                    window.location.href = this.href;
+                });
+            });
         });
-    });
-});
-
     </script>
 
 </body>

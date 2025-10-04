@@ -154,7 +154,9 @@ Route::group(
             })->name('payment.page');
             Route::get('/confirem', function () {
                 return view('include.confirem'); // لأن ملفك موجود داخل resources/views/includes/payment.blade.php
-            })->name('confirem');
+            })->name('confire');
+            Route::post('/admin/toggle-maintenance', [BackendController::class, 'toggleMaintenance'])
+                ->name('admin.toggleMaintenance');
             Route::get('/cart', [CartController::class, 'index'])->name('cart');
             Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add'); // For adding items
             Route::patch('/cart/{durationPriceId}', [CartController::class, 'update'])->name('cart.update'); // Changed parameter name

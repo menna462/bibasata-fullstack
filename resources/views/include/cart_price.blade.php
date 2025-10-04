@@ -29,29 +29,37 @@
                         <tr>
                             <td class="product-cell" data-label="{{ __('language.product') }}">
                                 <div class="product-info-details">
-                                    <img src="{{ asset('image/products/' . $item['image']) }}"
-                                         alt="product image"
-                                         class="product-image" />
+                                    @php
+                                        $image = $item['image'];
+                                        if (is_array($image)) {
+                                            $image = $image[0] ?? null;
+                                        }
+                                    @endphp
+
+                                    @if ($image)
+                                        <img src="{{ asset('image/products/' . $image) }}" alt="product image"
+                                            class="product-image" />
+                                    @else
+                                        <img src="{{ asset('image/no-image.png') }}" alt="No image"
+                                            class="product-image" />
+                                    @endif
+
                                     <span class="product-name">{{ $item['name_en'] }}</span>
                                 </div>
                             </td>
                             <td class="price-cell" data-label="{{ __('language.price') }}">
-                                ${{ number_format($item['price_usd'], 2) }}
+                                {{ format_price($item['price']) }}
                             </td>
                             <td class="quantity-cell" data-label="{{ __('language.quantity') }}">
                                 <form action="{{ route('cart.update', $item['duration_price_id']) }}" method="POST">
                                     @csrf
-                                    @method('PUT')
-                                    <input type="number"
-                                           class="quantity-box"
-                                           name="quantity"
-                                           value="{{ $item['quantity'] }}"
-                                           min="1"
-                                           onchange="this.form.submit()" />
+                                    @method('PATCH')
+                                    <input type="number" class="quantity-box" name="quantity"
+                                        value="{{ $item['quantity'] }}" min="1" onchange="this.form.submit()" />
                                 </form>
                             </td>
                             <td class="subtotal-cell" data-label="{{ __('language.subtotal') }}">
-                                ${{ number_format($item['total_price_usd'], 2) }}
+                                {{ format_price($item['total_price']) }}
                             </td>
                             <td>
                                 <form action="{{ route('cart.remove', $item['duration_price_id']) }}" method="POST">
@@ -77,11 +85,11 @@
                 <h3 class="totals-title">{{ __('language.cart_totals') }}</h3>
                 <div class="total-row">
                     <span class="total-label">{{ __('language.subtotal') }}</span>
-                    <span class="total-value">${{ number_format($cartTotal, 2) }}</span>
+                    <span class="total-value">{{ format_price($cartTotal) }}</span>
                 </div>
                 <div class="total-row total-amount">
                     <span class="total-label">{{ __('language.total') }}</span>
-                    <span class="total-value">${{ number_format($cartTotal, 2) }}</span>
+                    <span class="total-value">{{ format_price($cartTotal) }}</span>
                 </div>
                 <form action="{{ route('cart.checkout') }}" method="POST">
                     @csrf

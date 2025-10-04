@@ -290,65 +290,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const quantityInput = document.querySelector('.custom-quantity-input');
-        const priceElement = document.getElementById('current-price');
-        const durationRadios = document.querySelectorAll('.duration-radio');
-        const durationLabels = document.querySelectorAll('.duration-option');
+document.addEventListener('DOMContentLoaded', function(){
+    const productData = document.getElementById('product-data');
+    let currency = productData ? productData.dataset.currency : 'USD';
+    const priceEl = document.getElementById('current-price');
 
-        // ===================================
-        // 1. وظيفة محدد الكمية (Quantity Selector)
-        // ===================================
-        document.querySelectorAll('.custom-quantity-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                let currentValue = parseInt(quantityInput.value);
-                const action = this.getAttribute('data-action');
+    function updatePriceFromRadio(radio){
+        const usd = radio.dataset.priceUsd ? parseFloat(radio.dataset.priceUsd) : 0;
+        const egp = radio.dataset.priceEgp ? parseFloat(radio.dataset.priceEgp) : 0;
+        const price = (currency === 'EGP') ? egp : usd;
+        const symbol = (currency === 'EGP') ? ' ج.م ' : '$';
+        priceEl.textContent = symbol + Number(price).toFixed(2);
+    }
 
-                if (action === 'increment') {
-                    quantityInput.value = currentValue + 1;
-                } else if (action === 'decrement' && currentValue > 1) {
-                    quantityInput.value = currentValue - 1;
-                }
-            });
-        });
+    const radios = document.querySelectorAll('.duration-radio');
+    radios.forEach(r => r.addEventListener('change', function(){ updatePriceFromRadio(this); }));
 
-        // ===================================
-        // 2. وظيفة اختيار المدة وتحديث السعر
-        // ===================================
-        durationLabels.forEach(label => {
-            label.addEventListener('click', function() {
-                durationLabels.forEach(lbl => lbl.classList.remove('active'));
+    const checked = document.querySelector('.duration-radio:checked') || radios[0];
+    if (checked) updatePriceFromRadio(checked);
+});
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".custom-quantity-selector").forEach(function (selector) {
+        const input = selector.querySelector(".custom-quantity-input");
+        const decrementBtn = selector.querySelector("[data-action='decrement']");
+        const incrementBtn = selector.querySelector("[data-action='increment']");
 
-                this.classList.add('active');
-
-                const radioId = this.getAttribute('for');
-                const selectedRadio = document.getElementById(radioId);
-
-                if (selectedRadio) {
-                    selectedRadio.checked = true;
-                    updatePriceDisplay(selectedRadio.getAttribute('data-price'));
-                }
-            });
-        });
-
-        function updatePriceDisplay(newPrice) {
-            if (priceElement && newPrice !== null) {
-                const formattedPrice = parseFloat(newPrice).toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-                priceElement.textContent = `Rs. ${formattedPrice}`;
+        decrementBtn.addEventListener("click", function () {
+            let value = parseInt(input.value) || 1;
+            if (value > 1) {
+                input.value = value - 1;
             }
-        }
+        });
+
+        incrementBtn.addEventListener("click", function () {
+            let value = parseInt(input.value) || 1;
+            input.value = value + 1;
+        });
     });
+});
 
 $(document).ready(function() {
-    // 1. استهداف أيقونة السلة (Badge) لإعادة تسمية الكلاس لسهولة الوصول
-    // في كودك: <span class="badge">{{ $cartCount }}</span>
-    // سنستهدفها الآن بكلاس موحد لتسهيل التحديث:
     const $cartBadge = $('.icon-link .badge');
 
-    // 2. الاستماع لحدث النقر على زر الإضافة
     $('.pro-add-to-cart').on('click', function(e) {
         e.preventDefault();
 

@@ -149,14 +149,26 @@ Route::group(
             Route::post('/toggle-favorite', [FavoriteController::class, 'toggleFavorite'])->name('toggle.favorite');
             Route::post('/favorites/remove', [FavoriteController::class, 'removeFavorite'])->name('favorites.remove');
             Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
-
+            Route::get('/payment', function () {
+                return view('include.payment'); // لأن ملفك موجود داخل resources/views/includes/payment.blade.php
+            })->name('payment.page');
+            Route::get('/confirem', function () {
+                return view('include.confirem'); // لأن ملفك موجود داخل resources/views/includes/payment.blade.php
+            })->name('confirem');
             Route::get('/cart', [CartController::class, 'index'])->name('cart');
             Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add'); // For adding items
             Route::patch('/cart/{durationPriceId}', [CartController::class, 'update'])->name('cart.update'); // Changed parameter name
             Route::delete('/cart/{durationPriceId}', [CartController::class, 'remove'])->name('cart.remove'); // Changed parameter name
             Route::get('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
             Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+            Route::get('/set-currency/{currency}', function ($currency) {
+                if (in_array($currency, ['USD', 'EGP'])) {
+                    session(['user_currency' => $currency]);
+                }
+                return redirect()->back();
+            })->name('set.currency');
         });
+
         Route::get('/search', [FrontendController::class, 'search'])->name('frontend.search');
         Route::get('/live-search', [FrontendController::class, 'liveSearch'])->name('live.search');
         require __DIR__ . '/auth.php';

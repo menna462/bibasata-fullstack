@@ -51,7 +51,6 @@ class DurationPriceController extends Controller
             'duration_in_months' => 'required|integer|min:1',
             'price_usd' => 'required|numeric|min:0',
             'price_egp' => 'required|numeric|min:0',
-            // أضيفي validation لـ product_id و bundle_id لو لسه مش موجود
             'product_id' => 'nullable|exists:products,id',
             'bundle_id' => 'nullable|exists:bundles,id',
         ]);

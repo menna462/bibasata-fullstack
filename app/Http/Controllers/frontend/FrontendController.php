@@ -11,6 +11,8 @@ use App\Models\Product;
 use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Stevebauman\Location\Facades\Location;
+
 
 class FrontendController extends Controller
 {
@@ -19,56 +21,61 @@ class FrontendController extends Controller
         $categories = Category::with('products')->get();
         $products = Product::latest()->take(8)->get();
         $bundles = Bundle::take(3)->get();
-         $sliders = Slider::get();
-         $currentLocale = App::getLocale();
-         $descColumn = 'short_description_' . $currentLocale;
-         $nameColumn = 'name_' . $currentLocale;
+        $sliders = Slider::get();
+        $currentLocale = App::getLocale();
+        $descColumn = 'short_description_' . $currentLocale;
+        $nameColumn = 'name_' . $currentLocale;
         $comments = Comment::where('page_name', 'homepage')
             ->with('user')
             ->latest()
             ->get();
 
-        return view('include.home', compact('categories', 'products', 'bundles', 'comments','sliders','nameColumn','currentLocale','descColumn')); // <--- إضافة 'comments' هنا
+        return view('include.home', compact('categories', 'products', 'bundles', 'comments', 'sliders', 'nameColumn', 'currentLocale', 'descColumn')); // <--- إضافة 'comments' هنا
     }
 
     public function show($id)
     {
+        // $testIp = '41.196.243.254';
+        // $location = Location::get($testIp);
+        // dd($location->countryCode);
         $categories = Category::with('products')->get();
-        $products =Product::latest()->take(8)->get();
+        $products = Product::latest()->take(8)->get();
         $product = Product::with('durations')->findOrFail($id);
-         $currentLocale = App::getLocale();
-         $nameColumn = 'name_' . $currentLocale;
-        return view('include.productdetails', compact('products','product', 'categories','nameColumn','currentLocale'));
+        $currentLocale = App::getLocale();
+        $nameColumn = 'name_' . $currentLocale;
+        $shortDescColumn = 'description_' . $currentLocale;
+        $longDescColumn  = 'long_description_' . $currentLocale;
+        return view('include.productdetails', compact('products', 'product', 'categories', 'nameColumn', 'currentLocale', 'shortDescColumn', 'longDescColumn'));
     }
 
-public function showBundelDetails($id)
-{
-    $categories = Category::with('products')->get();
-    $bundle = Bundle::with(['durations', 'category'])->findOrFail($id);
+    public function showBundelDetails($id)
+    {
+        $categories = Category::with('products')->get();
+        $bundle = Bundle::with(['durations', 'category'])->findOrFail($id);
 
-    $currentLocale = App::getLocale();
-    $shortDescColumn = 'short_description_' . $currentLocale;
-    $longDescColumn  = 'long_description_' . $currentLocale;
-    $nameColumn      = 'name_' . $currentLocale;
+        $currentLocale = App::getLocale();
+        $shortDescColumn = 'short_description_' . $currentLocale;
+        $longDescColumn  = 'long_description_' . $currentLocale;
+        $nameColumn      = 'name_' . $currentLocale;
 
-    return view('include.bundeldetails', compact(
-        'bundle',
-        'categories',
-        'currentLocale',
-        'shortDescColumn',
-        'longDescColumn',
-        'nameColumn'
-    ));
-}
+        return view('include.bundeldetails', compact(
+            'bundle',
+            'categories',
+            'currentLocale',
+            'shortDescColumn',
+            'longDescColumn',
+            'nameColumn'
+        ));
+    }
 
 
 
- public function search(Request $request)
-{
-    $searchTerm = $request->input('query');
-    $categoryId = $request->input('category_id');
+    public function search(Request $request)
+    {
+        $searchTerm = $request->input('query');
+        $categoryId = $request->input('category_id');
 
-    $categories = Category::with('products')->get(); // جلب الفئات مع منتجاتها
+        $categories = Category::with('products')->get(); // جلب الفئات مع منتجاتها
 
         $currentLocale = App::getLocale();
         $nameColumn = 'name_' . $currentLocale; // العمود الخاص باللغة الحالية للبحث
@@ -84,29 +91,29 @@ public function showBundelDetails($id)
             $bundlesQuery->where(function ($q) use ($searchTerm, $nameColumn) { // إضافة $nameColumn
                 $q->where($nameColumn, 'like', '%' . $searchTerm . '%'); // البحث في العمود الصحيح
             });
+        }
+
+        if ($categoryId && $categoryId !== 'all') {
+            $productsQuery->where('category_id', $categoryId);
+        }
+
+        $foundProducts = $productsQuery->get();
+        $foundBundles = $bundlesQuery->get();
+
+        if ($foundProducts->count() === 1 && $foundBundles->isEmpty()) {
+            return redirect()->route('product.details', $foundProducts->first()->id);
+        } elseif ($foundBundles->count() === 1 && $foundProducts->isEmpty()) {
+            return redirect()->route('bundle.details', $foundBundles->first()->id);
+        }
+
+        // هنا يتم التعديل
+        $products = $productsQuery->paginate(10, ['*'], 'product_page');
+        $bundles = $bundlesQuery->paginate(10, ['*'], 'bundle_page');
+
+        $comments = Comment::where('page_name', 'homepage')->with('user')->latest()->get();
+
+        return view('welcome', compact('categories', 'products', 'bundles', 'searchTerm', 'categoryId', 'comments', 'nameColumn', 'currentLocale'));
     }
-
-    if ($categoryId && $categoryId !== 'all') {
-        $productsQuery->where('category_id', $categoryId);
-    }
-
-    $foundProducts = $productsQuery->get();
-    $foundBundles = $bundlesQuery->get();
-
-    if ($foundProducts->count() === 1 && $foundBundles->isEmpty()) {
-        return redirect()->route('product.details', $foundProducts->first()->id);
-    } elseif ($foundBundles->count() === 1 && $foundProducts->isEmpty()) {
-        return redirect()->route('bundle.details', $foundBundles->first()->id);
-    }
-
-    // هنا يتم التعديل
-    $products = $productsQuery->paginate(10, ['*'], 'product_page');
-    $bundles = $bundlesQuery->paginate(10, ['*'], 'bundle_page');
-
-    $comments = Comment::where('page_name', 'homepage')->with('user')->latest()->get();
-
-    return view('welcome', compact('categories', 'products', 'bundles', 'searchTerm', 'categoryId', 'comments','nameColumn','currentLocale'));
-}
 
     public function liveSearch(Request $request)
     {
@@ -118,7 +125,7 @@ public function showBundelDetails($id)
         $products = collect();
         $bundles = collect();
 
-       if ($searchTerm) {
+        if ($searchTerm) {
             $products = Product::where($nameColumn, 'like', '%' . $searchTerm . '%') // البحث في عمود الاسم الصحيح
                 ->orWhere($descriptionColumn, 'like', '%' . $searchTerm . '%') // البحث في عمود الوصف الصحيح
                 ->get();

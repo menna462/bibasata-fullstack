@@ -41,28 +41,11 @@
                 {{-- السعر --}}
                 <h2 class="product-price" id="current-price">
                     @if ($bundle->durations->isNotEmpty())
-                        {{ number_format($bundle->durations->first()->price ?? 0, 2) }}
-                        @if ($currentLocale == 'ar')
-                            جنيه
-                        @else
-                            $
-                        @endif
+                        {{ format_price($bundle->durations->first()) }}
                     @else
                         {{ __('language.no_price') }}
                     @endif
                 </h2>
-
-                {{-- التقييم (ثابت حالياً) --}}
-                <div class="d-flex align-items-center mb-4 start-code">
-                    <span class="text-warning">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </span>
-                    <span class="ms-2 customer-reviews">1 {{ __('language.customer_review') }}</span>
-                </div>
 
                 {{-- الوصف --}}
                 <p class="product-description mb-4">
@@ -75,20 +58,23 @@
                     <input type="hidden" name="bundle_id" value="{{ $bundle->id }}">
 
                     <h5 class="duration-title mb-2">{{ __('language.duration') }}</h5>
-                    <div class="d-flex duration-options-container flex-wrap mb-4" role="group"
-                        aria-label="Duration options">
+                    {{-- <div class="d-flex duration-options-container flex-wrap mb-4" role="group"
+                        aria-label="Duration options"> --}}
+                        <div id="product-data" data-currency="{{ session('user_currency', 'EGP') }}"></div>
 
                         @foreach ($bundle->durations as $duration)
-                            <input type="radio" id="duration-{{ $duration->id }}" name="duration_id"
-                                value="{{ $duration->id }}" data-price="{{ $duration->price }}" required
-                                class="d-none duration-radio" @if ($loop->first) checked @endif>
+                            <input type="radio" id="duration-{{ $duration->id }}" name="duration_price_id"
+                                value="{{ $duration->id }}" data-price-usd="{{ $duration->price_usd }}"
+                                data-price-egp="{{ $duration->price_egp }}" class="d-none duration-radio"
+                                @if ($loop->first) checked @endif>
+
                             <label for="duration-{{ $duration->id }}"
                                 class="btn btn-outline-secondary duration-option @if ($loop->first) active @endif">
                                 {{ $duration->duration_in_months }}
                                 {{ $duration->duration_in_months == 1 ? __('language.month') : __('language.months') }}
                             </label>
                         @endforeach
-                    </div>
+                    {{-- </div> --}}
 
                     {{-- الكمية --}}
                     <div class="d-flex align-items-center qu-custom mb-4 gap-2 mt-3">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Product;
+use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
@@ -16,8 +17,9 @@ class FrontendCategoryController extends Controller
         $categories = Category::with('products')->get();
         $products = Product::all();
          $currentLocale = App::getLocale();
+         $sliders = Slider::get();
          $nameColumn = 'name_' . $currentLocale;
-        return view('include.shop', compact('categories', 'products','nameColumn','currentLocale'));
+        return view('include.shop', compact('categories', 'products','nameColumn','currentLocale','sliders'));
     }
     public function show($id)
     {

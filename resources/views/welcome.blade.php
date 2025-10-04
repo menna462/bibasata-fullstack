@@ -24,6 +24,34 @@
         rel="stylesheet" />
 
     <title>home</title>
+    <style>
+        .icon-link {
+    display: inline-block;
+    position: relative;
+    font-size: 1.5rem;
+    color: #343a40; /* لون الأيقونة */
+    transition: color 0.3s;
+}
+
+.icon-link:hover {
+    color: #007bff; /* لون عند التحويم */
+}
+
+.icon-link .badge {
+    position: absolute;
+    /* في نظام RTL، نضع العداد في الزاوية العلوية اليسرى */
+    top: -8px;
+    left: -8px;
+    padding: 3px 6px;
+    border-radius: 50%;
+    background-color: #dc3545; /* لون أحمر مميز */
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    line-height: 1;
+    z-index: 10;
+}
+    </style>
 </head>
 
 <body>
@@ -282,6 +310,7 @@
         });
     });
 });
+
     </script>
 
 </body>

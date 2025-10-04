@@ -2,25 +2,14 @@
 @section('content')
     <div class="swiper mySwiper">
         <div class="swiper-wrapper">
-            <div class="swiper-slide">
-                <img src="../image/HOME.png" alt="" />
-                <div class="slide-content">
-                    <a href="#" class="call-to-action-button"> BUY NOW </a>
+            @foreach ($sliders as $slider)
+                <div class="swiper-slide">
+                    <img src="{{ asset('image/slider/' . $slider->image) }}" alt="" />
+                    <div class="slide-content">
+                        <a href="{{ route('shop') }}" class="call-to-action-button"> BUY NOW </a>
+                    </div>
                 </div>
-            </div>
-
-            <div class="swiper-slide">
-                <img src="../image/HOME.png" alt="" />
-                <div class="slide-content">
-                    <a href="#" class="call-to-action-button"> BUY NOW </a>
-                </div>
-            </div>
-            <div class="swiper-slide">
-                <img src="../image/HOME.png" alt="" />
-                <div class="slide-content">
-                    <a href="#" class="call-to-action-button"> BUY NOW </a>
-                </div>
-            </div>
+            @endforeach
         </div>
         <div class="swiper-pagination"></div>
         <div class="swiper-button-prev"></div>

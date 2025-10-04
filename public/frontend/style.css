@@ -13,7 +13,7 @@ a{
     padding-right: 20px;
 }
 .rtl-links label {
-  display: block;
+  /* display: block; */
   text-align: right;
 }
 
@@ -59,11 +59,10 @@ a{
 .rtl-links li
 {
   direction: rtl;
-  unicode-bidi: bidi-override;
   text-align: right !important;
 }
 .rtl-links .pro-content .pro-title,
-.rtl-links .pro-content .pro-description 
+.rtl-links .pro-content .pro-description
  {
     direction: rtl !important;
     text-align: right !important;
@@ -78,6 +77,29 @@ a{
  {
   flex-direction: row-reverse !important;
 }
+/* .rtl-links h2.product-price{
+direction: rtl;
+  unicode-bidi: none;
+  text-align: right !important
+} */
+ .custom-add-to-cart-btn {
+    background:rgba(2, 48, 22, 1) !important; /* أخضر متدرج */
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+/* .custom-add-to-cart-btn:hover {
+    background-color: rgba(2, 48, 22, 1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+} */
+
+
 .navbar {
     background-color: rgba(2, 48, 22, 1);
     height: 100px;

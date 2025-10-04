@@ -4,74 +4,66 @@
 
     <!-- nav down Section -->
     <div class="breadcrumb">
-        <div class="container">
+        <div class="container {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}">
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Shop</a></li>
+                <li><a href="{{ route('home') }}">{{ __('language.home') }}</a></li>
+                <li><a href="{{ route('shop') }}">{{ __('language.Shop') }}</a></li>
                 <li class="divider"></li>
-
-                <li class="current">{{ $product->{$nameColumn} }}</li>
+                <li class="current">{{ $product->$nameColumn }}</li>
             </ul>
         </div>
     </div>
 
     <div class="container my-5">
         <div class="row product-page-card rounded-4 p-4">
-            <div class="col-lg-5 p-3 d-flex justify-content-center">
+            <div class="col-lg-5 p-3 d-flex justify-content-cente flex-column align-items-centerr">
                 <div class="card product-card border-0 rounded-4">
-                    {{-- استخدام صورة المنتج الديناميكية --}}
                     <img src="{{ asset('image/products/' . $product->image) }}" class="card-img-top rounded-4"
-                        alt="{{ $product->name_en }}" />
+                        alt="{{ $product->$nameColumn }}" />
                 </div>
             </div>
 
-            <div class="col-lg-7 p-3 d-flex flex-column">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    {{-- اسم المنتج --}}
-                    <h1 class="product-title">{{ $product->name_en }}</h1>
+            <div class="col-lg-7 p-3 d-flex flex-column {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}">
+                <div class="d-flex des-ti mb-3">
+                    <h1 class="product-title">{{ $product->$nameColumn }}</h1>
                 </div>
 
-                {{-- سعر المنتج (يجب أن يتم تعديله بناءً على المدة المختارة عبر JS) --}}
                 <h2 class="product-price" id="current-price">
-                    Rs. {{ number_format($product->durations->first()->price ?? 0, 2) }}
+                    @if ($product->durations->isNotEmpty())
+                        {{ format_price($product->durations->first()) }}
+                    @else
+                        {{ __('language.no_price') }}
+                    @endif
                 </h2>
 
-                {{-- جزء التقييم (ثابت هنا لأغراض العرض) --}}
-                <div class="d-flex align-items-center mb-4">
-                    <span class="text-warning">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </span>
-                    <span class="ms-2 customer-reviews">1 Customer Review</span>
-                </div>
+
 
                 <p class="product-description mb-4">
-                    {{ $product->long_description_en }}
+                    {{ $product->$shortDescColumn ?? __('language.no_description') }}
                 </p>
+
                 <form action="{{ route('cart.add') }}" method="POST">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-                    <h5 class="duration-title mb-2">Duration</h5>
-                    <div class="d-flex duration-options-container flex-wrap mb-4" role="group"
-                        aria-label="Duration options">
-                        {{-- عرض المدد المتاحة --}}
-                        @foreach ($product->durations as $duration)
-                            <input type="radio" id="duration-{{ $duration->id }}" name="duration_id"
-                                value="{{ $duration->id }}" data-price="{{ $duration->price }}" required
-                                class="d-none duration-radio" @if ($loop->first) checked @endif>
-                            <label for="duration-{{ $duration->id }}"
-                                class="btn btn-outline-secondary duration-option @if ($loop->first) active @endif">
-                                {{ $duration->months }} months
-                            </label>
-                        @endforeach
-                    </div>
+                    {{-- ترجمة عنوان المدة --}}
+                    <h5 class="duration-title mb-2">{{ __('language.duration') }}</h5>
+                    <div id="product-data" data-currency="{{ session('user_currency', 'USD') }}"></div>
 
-                    <div class="d-flex align-items-center justify-content-start mb-4 gap-2 mt-5">
-                        {{-- محدد الكمية --}}
+                    @foreach ($product->durations as $duration)
+                        <input type="radio" id="duration-{{ $duration->id }}" name="duration_price_id"
+                            value="{{ $duration->id }}" data-price-usd="{{ $duration->price_usd }}"
+                            data-price-egp="{{ $duration->price_egp }}" class="d-none duration-radio"
+                            @if ($loop->first) checked @endif>
+                        <label for="duration-{{ $duration->id }}"
+                            class="btn btn-outline-secondary duration-option @if ($loop->first) active @endif">
+                            {{ $duration->duration_in_months }}
+                            {{ $duration->duration_in_months == 1 ? __('language.month') : __('language.months') }}
+                        </label>
+                    @endforeach
+
+
+                    <div class="d-flex align-items-center qu-custom mb-4 gap-2 mt-3">
                         <div class="input-group custom-quantity-selector">
                             <button class="btn custom-quantity-btn" type="button" data-action="decrement">-</button>
                             <input type="text" name="quantity" class="form-control text-center custom-quantity-input"
@@ -79,22 +71,17 @@
                             <button class="btn custom-quantity-btn" type="button" data-action="increment">+</button>
                         </div>
 
-                        {{-- زر الإرسال (الذي يرسل النموذج) --}}
-                        <button class="btn custom-add-to-cart-btn" type="submit">Add To Cart</button>
+                        <button class="btn custom-add-to-cart-btn" type="submit">
+                            {{ __('language.add_to_cart') }}
+                        </button>
                     </div>
                 </form>
-                {{-- =================================== --}}
-
-                <hr />
-
-                <div class="product-meta mt-4">
-                    <p><strong>Product Code:</strong> {{ $product->id ?? 'N/A' }}</p>
-                    <p><strong>Category:</strong> {{ $product->category->name_en ?? 'N/A' }}</p>
-                    {{-- ... (جزء المشاركة) ... --}}
-                </div>
             </div>
         </div>
     </div>
+
+
+
 
     <div class="tab-buttons">
         <button class="tab-button active" onclick="showContent('descriptionContent', event)">
@@ -108,19 +95,8 @@
     <div class="container">
         <div id="descriptionContent" class="tab-content active">
             <p>
-                Embodying the raw, wayward spirit of rock 'n' roll, the Kilburn
-                portable active stereo speaker takes the unmistakable look and sound
-                of Marshall, unplugs the chords, and takes the show on the road.
-            </p>
-            <p>
-                Weighing in under 7 pounds, the Kilburn is a lightweight piece of
-                vintage styled engineering. Setting the bar as one of the loudest
-                speakers in its class, the Kilburn is a compact, stout-hearted hero
-                with a well-balanced audio which boasts a clear midrange and extended
-                highs for a sound that is both articulate and pronounced. The analogue
-                knobs allow you to fine tune the controls to your personal preferences
-                while the guitar-influenced leather strap enables easy and stylish
-                travel.
+                {{ $product->{'long_description_' . app()->getLocale()} ?? __('language.no_description') }}
+
             </p>
         </div>
 

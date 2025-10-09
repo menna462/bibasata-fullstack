@@ -50,7 +50,11 @@ class FrontendController extends Controller
         $nameColumn = 'name_' . $currentLocale;
         $shortDescColumn = 'description_' . $currentLocale;
         $longDescColumn  = 'long_description_' . $currentLocale;
-        return view('include.productdetails', compact('products', 'product', 'categories', 'nameColumn', 'currentLocale', 'shortDescColumn', 'longDescColumn'));
+        $comments = Comment::where('page_name', 'homepage')
+            ->with('user')
+            ->latest()
+            ->get();
+        return view('include.productdetails', compact('products', 'product', 'categories', 'nameColumn', 'currentLocale', 'shortDescColumn', 'longDescColumn','comments'));
     }
 
     public function showBundelDetails($id)
@@ -72,7 +76,7 @@ class FrontendController extends Controller
             'nameColumn'
         ));
     }
-    
+
 
 
 

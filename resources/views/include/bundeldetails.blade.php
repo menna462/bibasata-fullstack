@@ -60,20 +60,20 @@
                     <h5 class="duration-title mb-2">{{ __('language.duration') }}</h5>
                     {{-- <div class="d-flex duration-options-container flex-wrap mb-4" role="group"
                         aria-label="Duration options"> --}}
-                        <div id="product-data" data-currency="{{ session('user_currency', 'EGP') }}"></div>
+                    <div id="product-data" data-currency="{{ session('user_currency', 'EGP') }}"></div>
 
-                        @foreach ($bundle->durations as $duration)
-                            <input type="radio" id="duration-{{ $duration->id }}" name="duration_price_id"
-                                value="{{ $duration->id }}" data-price-usd="{{ $duration->price_usd }}"
-                                data-price-egp="{{ $duration->price_egp }}" class="d-none duration-radio"
-                                @if ($loop->first) checked @endif>
+                    @foreach ($bundle->durations as $duration)
+                        <input type="radio" id="duration-{{ $duration->id }}" name="duration_price_id"
+                            value="{{ $duration->id }}" data-price-usd="{{ $duration->price_usd }}"
+                            data-price-egp="{{ $duration->price_egp }}" class="d-none duration-radio"
+                            @if ($loop->first) checked @endif>
 
-                            <label for="duration-{{ $duration->id }}"
-                                class="btn btn-outline-secondary duration-option @if ($loop->first) active @endif">
-                                {{ $duration->duration_in_months }}
-                                {{ $duration->duration_in_months == 1 ? __('language.month') : __('language.months') }}
-                            </label>
-                        @endforeach
+                        <label for="duration-{{ $duration->id }}"
+                            class="btn btn-outline-secondary duration-option @if ($loop->first) active @endif">
+                            {{ $duration->duration_in_months }}
+                            {{ $duration->duration_in_months == 1 ? __('language.month') : __('language.months') }}
+                        </label>
+                    @endforeach
                     {{-- </div> --}}
 
                     {{-- الكمية --}}
@@ -90,7 +90,22 @@
                         </button>
                     </div>
                 </form>
-
+                <hr />
+                <div class="product-meta ">
+                    <div class="detail-icon">
+                        <span><strong>Share:</strong></span>
+                        <div class="social-icons ms-3">
+                            <a href="https://www.facebook.com/BibasataSoftAi" class="social-icon"><i
+                                    class="fab fa-facebook-f"></i></a>
+                            <a href="https://wa.me/201023290446?text=مرحبًا%20عايزة%20استفسر%20عن%20المنتج" target="_blank"
+                                class="social-icon">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </a>
+                            <a href="https://www.instagram.com/bibasatasoftai" class="social-icon"><i
+                                    class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
                 <hr />
 
                 {{-- بيانات إضافية --}}

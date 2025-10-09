@@ -76,7 +76,25 @@
                         </button>
                     </div>
                 </form>
+                <hr />
+                <div class="product-meta ">
+                    <p style="color: black"><strong>Category:</strong> {{ $product->category->name ?? 'No category' }}</p>
+                    <div class="detail-icon">
+                        <span><strong>Share:</strong></span>
+                        <div class="social-icons ms-3">
+                            <a href="https://www.facebook.com/BibasataSoftAi" class="social-icon"><i
+                                    class="fab fa-facebook-f"></i></a>
+                            <a href="https://wa.me/201023290446?text=مرحبًا%20عايزة%20استفسر%20عن%20المنتج" target="_blank"
+                                class="social-icon">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </a>
+                            <a href="https://www.instagram.com/bibasatasoftai" class="social-icon"><i
+                                    class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -85,10 +103,11 @@
 
     <div class="tab-buttons">
         <button class="tab-button active" onclick="showContent('descriptionContent', event)">
-            Description
+            {{ __('language.Description') }}
         </button>
         <button class="tab-button" onclick="showContent('reviewsContent', event)">
-            Reviews
+            {{ __('language.Reviews') }}
+
         </button>
     </div>
 
@@ -105,133 +124,173 @@
                 <div class="user-avatar">
                     <img src="../image/Ellipse3.png" alt="User Avatar" class="avatar-img" />
                 </div>
-                <div class="comment-input-area">
-                    <input type="text" placeholder="Add a comment..." class="comment-input" />
-                    <button class="post-button">Post</button>
-                </div>
-            </div>
+
+                <form action="{{ route('comments.store') }}" method="POST" class="comment-input-area">
+                    @csrf
+                    <input type="hidden" name="page_name" value="homepage">
+
+                    @guest
+                        <input type="text" name="guest_name" placeholder="Enter your name..." class="comment-input mb-2"
+                            required>
+                    @endguest
+
+                    <div class="rating-stars mb-2" style="direction: rtl;">
+                        @for ($i = 5; $i >= 1; $i--)
+                            <input type="radio" id="star{{ $i }}" name="rating"
+                                value="{{ $i }}" />
+                            <label for="star{{ $i }}" title="{{ $i }} stars">★</label>
+                        @endfor
+                    </div>
+
+                    <input type="text" name="content" placeholder="Add a comment..." class="comment-input" required>
+                    <button type="submit" class="post-button">Post</button>
+                </form>
+            </div> <!-- end add-comment-box -->
 
             <div class="swiper myReviewsSwiper">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div class="review-section">
-                            <div class="review-header">
-                                <img src="../image/Ellipse3.png" alt="User Image" class="user-image" />
-                                <div class="user-info">
-                                    <h4>Armen Sargsyan</h4>
-                                    <div class="rating">
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star"></span>
-                                    </div>
-                                </div>
-                                <p class="review-date">1 month ago</p>
-                            </div>
-                            <div class="review-body">
-                                <p>
-                                    Embodying the raw, wayward spirit of rock 'n' roll, the
-                                    Kilburn portable active stereo speaker takes the
-                                    unmistakable look and sound of Marshall, unplugs the chords,
-                                    and takes the show on the road.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="review-section">
-                            <div class="review-header">
-                                <img src="../image/Ellipse3.png" alt="User Image" class="user-image" />
-                                <div class="user-info">
-                                    <h4>Amira Khaled</h4>
-                                    <div class="rating">
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star"></span>
-                                    </div>
-                                </div>
-                                <p class="review-date">3 weeks ago</p>
-                            </div>
-                            <div class="review-body">
-                                <p>
-                                    The product quality is excellent and the design is very
-                                    stylish. I highly recommend it!
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="review-section">
-                            <div class="review-header">
-                                <img src="../image/Ellipse3.png" alt="User Image" class="user-image" />
-                                <div class="user-info">
-                                    <h4>Ahmed Gamal</h4>
-                                    <div class="rating">
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star checked"></span>
-                                    </div>
-                                </div>
-                                <p class="review-date">1 week ago</p>
-                            </div>
-                            <div class="review-body">
-                                <p>
-                                    This is the best item I've ever bought. It's truly amazing
-                                    and the sound quality is top-notch.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    @foreach ($comments as $comment)
+                        <div class="swiper-slide">
+                            <div class="review-section">
+                                <div class="review-header">
+                                    <img src="{{ asset('frontend/image/Ellipse3.png') }}" alt="User Image"
+                                        class="user-image" />
+
+                                    <div class="user-info">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <h4 class="mb-0">
+                                                {{ $comment->user ? $comment->user->name : $comment->guest_name }}
+                                            </h4>
+                                            <small class="text-muted">•
+                                                {{ $comment->created_at->diffForHumans() }}</small>
+                                        </div>
+
+                                        <div class="rating mt-1">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                @if ($i <= $comment->rating)
+                                                    <span class="fa fa-star checked"></span>
+                                                @else
+                                                    <span class="fa fa-star"></span>
+                                                @endif
+                                            @endfor
+                                        </div>
+                                    </div> <!-- end user-info -->
+                                </div> <!-- end review-header -->
+
+                                <div class="review-body mt-2">
+                                    <p class="mb-1">{{ $comment->content }}</p>
+
+                                    @auth
+                                        @if (Auth::id() === $comment->user_id)
+                                            <form action="{{ route('comments.destroy', $comment->id) }}" method="POST"
+                                                class="delete-comment-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm mt-1 delete"> {{ __('language.delete') }}</button>
+                                            </form>
+                                        @endif
+                                    @endauth
+                                </div> <!-- end review-body -->
+                            </div> <!-- end review-section -->
+                        </div> <!-- end swiper-slide -->
+                    @endforeach
+                </div> <!-- end swiper-wrapper -->
+
                 <div class="swiper-pagination reviews-pagination"></div>
             </div>
         </div>
+
+
     </div>
 
+    @php
+        // المنتجات من بعد أول 3 منتجات
+        $remainingProducts = $products->skip(3);
+    @endphp
     <!-- card -->
     <div class="pro-section py-5">
         <div class="container">
             <h2 class="text-center mb-5">{{ __('language.our_products') }}</h2>
-            <div class="row g-4 justify-content-center  {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}">
-                @foreach ($products as $product)
+            <div class="row g-4 justify-content-center {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}">
+                @foreach ($remainingProducts as $product)
                     @php
                         $descriptionColumn = 'description_' . $currentLocale;
+                        $productShareUrl = route('product.details', ['id' => $product->id]);
+                        $productShareTitle = $product->name;
                     @endphp
+
                     <div class="col-6 col-md-3">
                         <div class="pro-card">
-                            {{-- صورة المنتج --}}
                             <img src="{{ asset('image/products/' . $product->image) }}" class="img-fluid"
                                 alt="{{ $product->{$nameColumn} ?? $product->name_en }}" />
 
                             <div class="pro-overlay">
                                 <div class="pro-hover-menu">
-
                                     <a href="{{ route('product.details', ['id' => $product->id]) }}"
                                         class="btn pro-go-to-details">
                                         {{ __('language.home_details') }}
                                     </a>
 
                                     <div class="pro-btn-actions">
-                                        {{-- أيقونة المفضلة --}}
-                                        <button class="btn pro-btn-icon">
+                                        @php
+                                            $isGuestFavorited = false;
+                                            if (!Auth::check()) {
+                                                $guestFavorites = session('guest_favorites', []);
+                                                $modelClass = 'App\\Models\\Product';
+                                                $key = $modelClass . '_' . $product->id;
+                                                $isGuestFavorited = isset($guestFavorites[$key]);
+                                            }
+
+                                            if (Auth::check()) {
+                                                $onClickAction = "toggleFavoriteAjax({$product->id}, 'product', this.querySelector('.favorite-icon'))";
+                                            } else {
+                                                $onClickAction = "window.location.href = '" . route('login') . "'";
+                                            }
+                                        @endphp
+
+                                        <button class="btn pro-btn-icon" onclick="{{ $onClickAction }}">
                                             <i class="favorite-icon
-                                        @if (Auth::check() &&
-                                                Auth::user()->allFavorites()->where('favoritable_id', $product->id)->where('favoritable_type', 'App\Models\Product')->exists()) fas fa-heart favorited
-                                        @else far fa-heart @endif"
+                                            @if (
+                                                (Auth::check() &&
+                                                    Auth::user()->allFavorites()->where('favoritable_id', $product->id)->where('favoritable_type', 'App\Models\Product')->exists()) ||
+                                                    $isGuestFavorited) fas fa-heart favorited
+                                            @else
+                                                far fa-heart @endif"
                                                 data-favoritable-id="{{ $product->id }}"
                                                 data-favoritable-type="product">
-                                            </i>{{ __('language.like') }}
+                                            </i>
+                                            {{ __('language.like') }}
                                         </button>
 
-                                        {{-- زر المشاركة --}}
-                                        <button class="btn pro-btn-icon">
+                                        <!-- زر المشاركة -->
+                                        <button class="btn pro-btn-icon"
+                                            onclick="openSharePopup('{{ $product->id }}', '{{ $productShareTitle }}', '{{ $productShareUrl }}')">
                                             <i class="fas fa-share-alt"></i> {{ __('language.share') }}
                                         </button>
+
+                                        <!-- النافذة المنبثقة -->
+                                        <div id="sharePopup-{{ $product->id }}" class="share-popup">
+                                            <div class="share-content">
+                                                <span class="close-btn"
+                                                    onclick="closeSharePopup('{{ $product->id }}')">&times;</span>
+                                                <h5>شارك المنتج عبر</h5>
+                                                <div class="share-icons">
+                                                    <a href="#" class="facebookShare" target="_blank"><i
+                                                            class="fab fa-facebook-f"></i></a>
+                                                    <a href="#" class="whatsappShare" target="_blank"><i
+                                                            class="fab fa-whatsapp"></i></a>
+                                                    <a href="#" class="instagramShare" target="_blank"><i
+                                                            class="fab fa-instagram"></i></a>
+                                                    <a href="#" class="twitterShare" target="_blank"><i
+                                                            class="fab fa-x-twitter"></i></a>
+                                                </div>
+                                                <button class="copy-link-btn"
+                                                    onclick="copyProductLink('{{ $productShareUrl }}', this)">
+                                                    <i class="fas fa-link"></i> {{ __('language.copy') }}
+                                                </button>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -244,14 +303,11 @@
                     </div>
                 @endforeach
             </div>
-
             <div class="text-center mt-5">
                 <a href="{{ route('shop') }}" class="btn pro-show-more-btn">
                     {{ __('language.show_more') }}
                 </a>
             </div>
-
-
         </div>
     </div>
 @endsection

@@ -64,8 +64,11 @@
                 <i class="fa-solid fa-bars fa-2x"></i>
             </button>
             <div class="center-img">
-                <img src="{{ asset('frontend/image/logo1.png') }}" alt="logo" />
+                <a href="{{ url('/') }}">
+                    <img src="{{ asset('frontend/image/logo1.png') }}" alt="logo" />
+                </a>
             </div>
+
 
             {{-- Desktop Navigation --}}
             <div class="right-nav d-none d-lg-block  {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}">
@@ -125,15 +128,26 @@
 
                     {{-- أيقونة المفضلة (العداد يظهر فقط للمسجلين) --}}
                     <li>
-                        <a href="{{ route('favorites') }}" class="icon-link position-relative">
+                        <a href="{{ route('favorites') }}" class="icon-link position-relative"
+                            id="favorites-count-link">
                             <i class="fa-regular fa-heart fa-lg" aria-hidden="true"></i>
-                            @auth
-                                {{-- العداد للمسجلين فقط: يعتمد على بيانات قاعدة البيانات --}}
-                                @php $favoritesCount = Auth::user()->allFavorites()->count(); @endphp
-                                @if ($favoritesCount > 0)
-                                    <span class="badge">{{ $favoritesCount }}</span>
-                                @endif
-                            @endauth
+
+                            @php
+                                $favoritesCount = 0;
+                                if (Auth::check()) {
+                                    // للمسجلين: العدد من قاعدة البيانات
+                                    $favoritesCount = Auth::user()->allFavorites()->count();
+                                } else {
+                                    // للضيوف: العدد من الجلسة
+                                    // يتم حفظ المفضلة كـ [key => item_details] لذا نستخدم count
+                                    $favoritesCount = count(session('guest_favorites', []));
+                                }
+                            @endphp
+
+                            @if ($favoritesCount > 0)
+                                {{-- هذا العنصر هو الذي يبحث عنه الجافاسكريبت لتحديثه --}}
+                                <span class="badge" id="favorites-count-badge">{{ $favoritesCount }}</span>
+                            @endif
                         </a>
                     </li>
                     <li>
@@ -196,18 +210,77 @@
             </div>
 
             {{-- Mobile Dropdown Menu --}}
-            <div class="dropdown-menu-mobile  {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}" id="mobile-menu">
+            {{-- Mobile Dropdown Menu --}}
+            <div class="dropdown-menu-mobile {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}" id="mobile-menu">
                 <ul>
-                    <li><a href="./index.html">Home</a></li>
-                    <li><a href="./category.html">Shop</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="{{ url('/') }}">{{ __('language.Home') }}</a></li>
+                    <li><a href="{{ url('/shop') }}">{{ __('language.Shop') }}</a></li>
+                    <li><a href="{{ url('/about') }}">{{ __('language.About') }}</a></li>
+                    <li><a href="{{ url('/contact') }}">{{ __('language.Contact') }}</a></li>
+
+                    @auth
+                        <li><a href="{{ route('profile.show') }}">{{ __('language.Profile') }}</a></li>
+                        <li>
+                            <a href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit();">
+                                {{ __('language.Logout') }}
+                            </a>
+                        </li>
+                        <form id="logout-form-mobile" action="{{ route('logout') }}" method="POST"
+                            style="display: none;">
+                            @csrf
+                        </form>
+                    @else
+                        <li><a href="{{ route('login') }}">{{ __('language.Login') }}</a></li>
+                        <li><a href="{{ route('register') }}">{{ __('language.Register') }}</a></li>
+                    @endauth
                 </ul>
-                <ul class="icons">
-                    <li><a href="#"><i class="fa-regular fa-user"></i></a></li>
-                    <li><a href="#"><i class="fa-solid fa-magnifying-glass"></i></a></li>
-                    <li><a href="#"><i class="fa-regular fa-heart"></i></a></li>
-                    <li><a href="#"><i class="fa-solid fa-cart-shopping"></i></a></li>
+
+                {{-- <ul class="icons">
+                    <li>
+                        @auth
+                            <a href="{{ route('profile.show') }}"><i class="fa-regular fa-user"></i></a>
+                        @else
+                            <a href="{{ route('login') }}"><i class="fa-regular fa-user"></i></a>
+                        @endauth
+                    </li>
+
+                    <li class="search-toggle-li">
+                        <a href="javascript:void(0)" class="search-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </a>
+                        <form action="{{ route('frontend.search') }}" method="GET" class="search-input-container"
+                            style="display: none;">
+                            <input type="text" name="query" placeholder="ابحث هنا..." class="search-input"
+                                value="{{ request('query') }}">
+                            <button type="submit" class="search-btn">بحث</button>
+                        </form>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('favorites') }}" class="icon-link position-relative">
+                            <i class="fa-regular fa-heart"></i>
+                            @auth
+                                @php $favoritesCount = Auth::user()->allFavorites()->count(); @endphp
+                                @if ($favoritesCount > 0)
+                                    <span class="badge">{{ $favoritesCount }}</span>
+                                @endif
+                            @endauth
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('cart') }}" class="icon-link position-relative">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            @php
+                                $cart = session()->get('cart', []);
+                                $cartCount = array_sum(array_column($cart, 'quantity'));
+                            @endphp
+                            @if ($cartCount > 0)
+                                <span class="badge">{{ $cartCount }}</span>
+                            @endif
+                        </a>
+                    </li>
 
                     <li class="nav-item dropdown language-dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="languageDropdownMobile"
@@ -241,8 +314,9 @@
                             @endforeach
                         </ul>
                     </li>
-                </ul>
+                </ul> --}}
             </div>
+
         </div>
     </header>
 
@@ -254,23 +328,26 @@
             {{-- Social Media --}}
             <div class="footer-section social-media">
                 <img src="{{ asset('frontend/image/7.png') }}" alt="Bibasata Logo" class="logo" />
-                <h3>{{ __('footer.Social_Media') }}</h3>
+                <h3>{{ __('language.Social_Media') }}</h3>
                 <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/BibasataSoftAi"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://wa.me/201023290446?text=مرحبًا%20عايزة%20استفسر%20عن%20المنتج" target="_blank"
+                        class="social-icon">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                    <a href="https://www.instagram.com/bibasatasoftai"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             {{-- Links --}}
             <div class="footer-section links">
-                <h3>{{ __('footer.Links') }}</h3>
+                <h3>{{ __('language.Links') }}</h3>
                 <ul>
                     <li><a href="{{ url('/') }}">{{ __('language.Home') }}</a></li>
                     <li><a href="{{ url('/shop') }}">{{ __('language.Shop') }}</a></li>
                     <li><a href="{{ url('/about') }}">{{ __('language.About') }}</a></li>
                     <li><a href="{{ url('/contact') }}">{{ __('language.Contact') }}</a></li>
-                    <li><a href="{{ url('/conditions') }}">{{ __('language.Terms') }}</a></li>
+                    <li><a href="{{ url('/conditions') }}">{{ __('language.Term') }}</a></li>
                 </ul>
             </div>
 
@@ -278,9 +355,17 @@
             <div class="footer-section popular-products">
                 <h3>{{ __('language.Popular_Products') }}</h3>
                 <ul>
-                    <li><a href="#">Adobe</a></li>
-                    <li><a href="#">ChatGPT</a></li>
-                    <li><a href="#">Freebix</a></li>
+                    @php
+                        // تحديد العمود بناءً على اللغة الحالية
+                        $nameColumn = app()->getLocale() == 'ar' ? 'name_ar' : 'name_en';
+                    @endphp
+                    @foreach ($categories->take(3) as $category)
+                        <li>
+                            <a href="{{ route('category.products', $category->id) }}">
+                                {{ $category->$nameColumn }}
+                            </a>
+                        </li>
+                    @endforeach
                 </ul>
             </div>
 
@@ -296,7 +381,7 @@
 
         <div class="footer-bottom">
             <div class="copyright">
-                <p>&copy; 2025 Bibasata. {{ __('footer.All_Rights') }}</p>
+                <p>&copy; 2025 Bibasata. {{ __('language.All_Rights') }}</p>
             </div>
         </div>
     </footer>
@@ -317,14 +402,13 @@
 
             filterLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
-                    // منع الإجراء الافتراضي للـ dropdown (وهو ما يفعله bootstrap)
                     e.stopPropagation();
-                    // توجيه المتصفح إلى الرابط الموجود في href مباشرة
                     window.location.href = this.href;
                 });
             });
         });
     </script>
+
 
 </body>
 

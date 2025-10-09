@@ -15,8 +15,8 @@ return [
     'Email_Placeholder' => 'أدخل بريدك الإلكتروني',
     'Subscribe' => 'اشترك',
     'All_Rights' => 'جميع الحقوق محفوظة',
-     'main_categories' => 'الأقسام الرئيسية',
-         'page_title' => 'إعدادات الحساب',
+    'main_categories' => 'الأقسام الرئيسية',
+    'page_title' => 'إعدادات الحساب',
     'error_heading' => 'من فضلك صحح الأخطاء التالية:',
     'edit_account_details_heading' => 'تعديل بيانات الحساب',
     'name_label' => 'الاسم',
@@ -34,7 +34,7 @@ return [
     'purchase_date_label' => 'تاريخ الشراء',
     'no_purchased_products' => 'لا يوجد منتجات تم شراؤها بعد.',
     'no_image' => 'لا توجد صورة',
-        'cart_title' => 'سلة المشتريات',
+    'cart_title' => 'سلة المشتريات',
     'home' => 'الرئيسية',
     'product' => 'المنتج',
     'price' => 'السعر',
@@ -45,7 +45,7 @@ return [
     'checkout' => 'إتمام الشراء',
     'remove' => 'إزالة',
     'empty_cart' => 'سلة المشتريات فارغة.',
-        'page_title' => 'من نحن',
+    'page_title' => 'من نحن',
     'breadcrumb_home' => 'الرئيسية',
     'breadcrumb_about' => 'من نحن',
 
@@ -83,7 +83,7 @@ return [
         'deals' => ['title' => 'عروض حصرية', 'desc' => 'خصومات خاصة لك'],
         'support' => ['title' => 'دعم 24 / 7', 'desc' => 'دعم مخصص'],
     ],
-     'contact' => [
+    'contact' => [
         'title' => 'تواصل معنا',
         'home' => 'الرئيسية',
         'subtitle' => 'تواصل',
@@ -101,7 +101,6 @@ return [
     ],
     'phone' => 'رقم الهاتف',
     'phone_placeholder' => 'اكتب رقم هاتفك هنا',
-    'Terms'=>'الشروط والاحكام',
     'terms' => [
         'title' => 'الشروط والأحكام',
         'breadcrumb' => 'الرئيسية',
@@ -200,7 +199,7 @@ return [
     'maintenance_title' => 'الموقع قيد التطوير والصيانة',
     'maintenance_message' => 'سيكون الموقع متاحًا قريبًا. لطلبات الشراء أو أي استفسارات، يرجى زيارة صفحاتنا على فيسبوك، انستجرام، أو واتساب.',
     'checkout' => 'إتمام الطلب', // أو 'الدفع', أو 'المتابعة للدفع'
-     'subscription_confirmed' => 'تم تأكيد الاشتراك',
+    'subscription_confirmed' => 'تم تأكيد الاشتراك',
     'thank_you_message' => 'شكراً لك على عملية الشراء. تم تفعيل اشتراكك بنجاح. تحقق من بريدك الإلكتروني للحصول على تفاصيل التفعيل أو قم بزيارة صفحة اشتراكاتي لإدارة وتتبع خطتك.',
     'back_to_home' => 'العودة للصفحة الرئيسية',
     'our_products' => 'منتجاتنا',
@@ -209,7 +208,7 @@ return [
     'share' => 'مشاركة',
     'show_more' => 'عرض المزيد',
     'explore_more' => 'اكتشف المزيد',
-       'no_price' => 'لا يوجد سعر متاح',
+    'no_price' => 'لا يوجد سعر متاح',
     'customer_review' => 'تقييم عميل',
     'no_description' => 'لا يوجد وصف',
     'duration' => 'المدة',
@@ -218,5 +217,9 @@ return [
     'add_to_cart' => 'أضف إلى السلة',
     'bundle_code' => 'كود الباندل',
     'category' => 'الفئة',
-
+    'Term' => 'الشروط والاحكام',
+    'copy ' => 'نسخ الرابط',
+    'Reviews' => 'تعليقات',
+    'Description' => 'الوصف',
+    'delete' => 'حذف',
 ];

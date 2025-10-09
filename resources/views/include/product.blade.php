@@ -52,53 +52,100 @@
         </div>
     </div>
 
-    <div class="card-shop">
-        <div class="container">
-            <h2 class="text-center mb-5">Our Products</h2>
-            <div class="row g-4 justify-content-center mt-4" id="products">
-                @foreach ($products as $product)
-                    <div class="col-6 col-md-3">
-                        <div class="pro-card">
-                            {{-- صورة المنتج --}}
-                            <img src="{{ asset('image/products/' . $product->image) }}" class="img-fluid"
-                                alt="{{ $product->name_en }}" />
+@php
+    // المنتجات من بعد أول 3 منتجات
+    $remainingProducts = $products->skip(3);
+@endphp
 
-                            <div class="pro-overlay">
-                                <div class="pro-hover-menu">
-                                    <button class="btn pro-add-to-cart">Add to cart</button>
-                                    <div class="pro-btn-actions">
-                                        {{-- أيقونة المفضلة --}}
-                                        <button class="btn pro-btn-icon">
-                                            <i class="favorite-icon
-                                            @if (Auth::check() &&
-                                                    Auth::user()->allFavorites()->where('favoritable_id', $product->id)->where('favoritable_type', 'App\Models\Product')->exists()) fas fa-heart favorited
-                                            @else far fa-heart @endif"
-                                                data-favoritable-id="{{ $product->id }}" data-favoritable-type="product">
-                                            </i>Like
-                                        </button>
+<div class="card-shop">
+    <div class="container">
+        <h2 class="text-center mb-5">Our Products</h2>
+        <div class="row g-4 justify-content-center mt-4" id="products">
+            @foreach ($remainingProducts as $product)
+                <div class="col-6 col-md-3">
+                    <div class="pro-card">
+                        {{-- صورة المنتج --}}
+                        <img src="{{ asset('image/products/' . $product->image) }}" class="img-fluid"
+                            alt="{{ $product->name_en }}" />
 
-                                        {{-- زر المشاركة --}}
-                                        <button class="btn pro-btn-icon">
-                                            <i class="fas fa-share-alt"></i> Share
-                                        </button>
+                        <div class="pro-overlay">
+                            <div class="pro-hover-menu">
+                                <button class="btn pro-add-to-cart">Add to cart</button>
+                                <div class="pro-btn-actions">
+                                    @php
+                                        // المنطق الأصلي لحساب حالة المفضلة للضيف (للعرض فقط)
+                                        $isGuestFavorited = false;
+                                        if (!Auth::check()) {
+                                            $guestFavorites = session('guest_favorites', []);
+                                            $modelClass = 'App\\Models\\Product';
+                                            $key = $modelClass . '_' . $product->id;
+                                            $isGuestFavorited = isset($guestFavorites[$key]);
+                                        }
+
+                                        // تحديد ما سيتم استدعاؤه عند الضغط
+                                        if (Auth::check()) {
+                                            // 1. للمستخدم المسجل: استدعاء دالة AJAX
+                                            $onClickAction = "toggleFavoriteAjax({$product->id}, 'product', this.querySelector('.favorite-icon'))";
+                                        } else {
+                                            // 2. للضيف: توجيه إلى صفحة تسجيل الدخول
+                                            $onClickAction = "window.location.href = '" . route('login') . "'";
+                                        }
+
+                                        $productShareUrl = route('product.details', ['id' => $product->id]);
+                                        $productShareTitle = $product->name;
+                                    @endphp
+
+                                    {{-- أيقونة المفضلة --}}
+                                    <button class="btn pro-btn-icon" onclick="{{ $onClickAction }}">
+                                        <i class="favorite-icon
+                                        @if (Auth::check() &&
+                                                Auth::user()->allFavorites()->where('favoritable_id', $product->id)->where('favoritable_type', 'App\Models\Product')->exists()) fas fa-heart favorited
+                                        @else far fa-heart @endif"
+                                            data-favoritable-id="{{ $product->id }}" data-favoritable-type="product">
+                                        </i> Like
+                                    </button>
+
+                                    {{-- زر المشاركة --}}
+                                    <button class="btn pro-btn-icon"
+                                        onclick="openSharePopup('{{ $product->id }}', '{{ $productShareTitle }}', '{{ $productShareUrl }}')">
+                                        <i class="fas fa-share-alt"></i> {{ __('language.share') }}
+                                    </button>
+
+                                    {{-- النافذة المنبثقة --}}
+                                    <div id="sharePopup-{{ $product->id }}" class="share-popup">
+                                        <div class="share-content">
+                                            <span class="close-btn"
+                                                onclick="closeSharePopup('{{ $product->id }}')">&times;</span>
+                                            <h5>شارك المنتج عبر</h5>
+                                            <div class="share-icons">
+                                                <a href="#" class="facebookShare" target="_blank"><i
+                                                        class="fab fa-facebook-f"></i></a>
+                                                <a href="#" class="whatsappShare" target="_blank"><i
+                                                        class="fab fa-whatsapp"></i></a>
+                                                <a href="#" class="instagramShare" target="_blank"><i
+                                                        class="fab fa-instagram"></i></a>
+                                                <a href="#" class="twitterShare" target="_blank"><i
+                                                        class="fab fa-x-twitter"></i></a>
+                                            </div>
+                                            <button class="copy-link-btn"
+                                                onclick="copyProductLink('{{ $productShareUrl }}', this)">
+                                                <i class="fas fa-link"></i> {{ __('language.copy') }}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="pro-content">
-                                <div class="pro-title">{{ $product->name_en }}</div>
-                                <div class="pro-description">{{ $product->description_en }}</div>
-                                {{-- لو حابة تضيفي أسعار زي الكود التاني --}}
-                                {{--
-                            <div class="pro-price-group">
-                                <span class="pro-price-new">{{ $product->price }} EGP</span>
-                            </div>
-                            --}}
-                            </div>
+                        <div class="pro-content">
+                            <div class="pro-title">{{ $product->name_en }}</div>
+                            <div class="pro-description">{{ $product->description_en }}</div>
                         </div>
                     </div>
-                @endforeach
-            </div>
+                </div>
+            @endforeach
         </div>
     </div>
+</div>
+
 @endsection

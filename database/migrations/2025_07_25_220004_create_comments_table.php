@@ -15,8 +15,9 @@ return new class extends Migration
 
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null'); // مين اللي علّق (ممكن يكون Null لو ضيف)
-            $table->string('guest_name')->nullable(); 
+            $table->string('guest_name')->nullable();
             $table->text('content'); // محتوى التعليق
+              $table->tinyInteger('rating')->nullable();
             $table->string('page_name')->default('homepage'); // عشان التعليق ممكن يكون على بوست، منتج، إلخ.
             $table->timestamps();
         });

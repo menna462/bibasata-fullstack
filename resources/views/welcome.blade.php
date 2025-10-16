@@ -236,7 +236,7 @@
                     @endauth
                 </ul>
 
-                {{-- <ul class="icons">
+                <ul class="icons">
                     <li>
                         @auth
                             <a href="{{ route('profile.show') }}"><i class="fa-regular fa-user"></i></a>
@@ -314,7 +314,7 @@
                             @endforeach
                         </ul>
                     </li>
-                </ul> --}}
+                </ul>
             </div>
 
         </div>

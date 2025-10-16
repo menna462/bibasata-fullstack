@@ -73,7 +73,6 @@
                 <a href="https://www.instagram.com/bibasatasoftai"><i class="fab fa-instagram"></i></a>
                 <a href="https://wsend.co/201023290446"><i class="fa-brands fa-whatsapp"></i></a>
                 <a href="{{ route('contact') }}">{{ __('language.contact-us-navbar') }}</a>
-                <a href="#">ENG</a>
             </div>
         </div>
     </div>
@@ -98,7 +97,7 @@
                 </div>
 
                 <div class="logo">
-                    <img src="{{ asset('frontend/images/BIBASATA-nav.png') }}" alt="Elite Logo" />
+                    <img src="{{ asset('frontend/images/BIBASATA.svg') }}" alt="Elite Logo" />
                 </div>
 
                 <div class="navbar-right-elements">
@@ -349,7 +348,7 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-md-6 logo">
-                        <img src={{ asset('frontend/images/BIBASATA-nav.png') }} alt="Image 1" />
+                        <img src={{ asset('frontend/images/BIBASATA.svg') }} alt="Image 1" />
                     </div>
                     <div class="col-md-6 text-center text-md-end buy">
                         <img src={{ asset('frontend/images/vodavon-removebg-preview.png') }} class="img-voda" />

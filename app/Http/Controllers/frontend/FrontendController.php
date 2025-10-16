@@ -22,7 +22,7 @@ class FrontendController extends Controller
             return view('include.error');
         }
 
-
+        $firstThreeCategories = Category::take(3)->get();
         $categories = Category::with('products')->get();
         $products = Product::latest()->take(8)->get();
         $bundles = Bundle::take(3)->get();
@@ -35,7 +35,7 @@ class FrontendController extends Controller
             ->latest()
             ->get();
 
-        return view('include.home', compact('categories', 'products', 'bundles', 'comments', 'sliders', 'nameColumn', 'currentLocale', 'descColumn')); // <--- إضافة 'comments' هنا
+        return view('include.home', compact('categories', 'products', 'bundles', 'comments', 'sliders', 'nameColumn', 'currentLocale', 'descColumn','firstThreeCategories')); // <--- إضافة 'comments' هنا
     }
 
     public function show($id)

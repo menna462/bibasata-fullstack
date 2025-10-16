@@ -63,16 +63,13 @@
             </div>
         </div>
     </div>
-@php
-    // نعرض المنتجات من بعد أول 3
-    $remainingProducts = $products->skip(3);
-@endphp
+
 
 <div class="card-shop">
     <div class="container">
         <div class="row g-4 justify-content-center mt-4 {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}"
             id="products">
-            @foreach ($remainingProducts as $product)
+            @foreach ($products as $product)
                 @php
                     $descriptionColumn = 'description_' . $currentLocale;
                 @endphp

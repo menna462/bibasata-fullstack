@@ -30,7 +30,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'images' => 'required|image|mimes:jpeg,png,jpg',
+            'images' => 'required|image|mimes:jpeg,png,jpg,gif',
             'name_en' => 'required|string',
             'name_ar' => 'required|string',
         ]);

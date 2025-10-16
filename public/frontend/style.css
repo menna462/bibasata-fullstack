@@ -213,7 +213,7 @@ direction: rtl;
 }
 
 .dropdown-menu-mobile.open {
-    max-height: 400px;
+    max-height: 467px;
     opacity: 1;
     transform: translateY(0);
 }
@@ -225,7 +225,7 @@ direction: rtl;
 }
 .dropdown-menu-mobile ul li a {
     display: block;
-    padding: 14px 20px;
+    padding: 9px 5px;
     text-decoration: none;
     color: #333;
     font-weight: 700;
@@ -368,16 +368,16 @@ direction: rtl;
     .pro-card img {
         height: 205px !important;
     }
-.navbar .left-nav {
+/* .navbar .left-nav {
     display: flex !important;
     justify-content: center;
     align-items: center;
     width: 100%;
-    order: 3; /* يخليها تظهر بعد اللوجو والزر */
+    order: 3;
     margin-top: 8px;
-  }
+  } */
 
-  .navbar .left-nav ul {
+  /* .navbar .left-nav ul {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -397,10 +397,10 @@ direction: rtl;
 
   .navbar .left-nav ul li a i {
     font-size: 20px;
-  }
+  } */
 
   .navbar {
-    height: 90px;
+    height: 73px;
     flex-wrap: wrap;
   }
 
@@ -418,6 +418,7 @@ direction: rtl;
     z-index: 9999 !important;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
+
 }
 @media (min-width: 992px) and (max-width: 1300px) {
   .navbar .container-fluid {
@@ -495,12 +496,15 @@ button {
 .mySwiper .swiper-slide {
     position: relative;
     width: 100%;
+    width: 100%;
+    height: 478px;;
     height: auto;
 }
 
 .mySwiper .swiper-slide img {
+    object-fit: cover;
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
 }
 

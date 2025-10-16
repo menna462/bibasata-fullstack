@@ -27,13 +27,13 @@
 
     <!-- القسم الأول - أول 3 منتجات -->
     <div class="tow-sections">
-        @foreach ($firstThree as $product)
+        @foreach ($firstThreeCategories as $category)
             <div class="section">
-                <img src="{{ asset('image/products/' . $product->image) }}" alt="{{ $product->name_en }}" />
+                <img src="{{ asset('image/category/' . $category->image) }}" alt="{{ $category->name_en }}" />
                 <div class="text-row">
-                    <p>{{ $product->{$nameColumn} }}</p>
-                    <a href="{{ route('product.details', ['id' => $product->id]) }}">
-                        <button>BUY NOW</button>
+                    <p>{{ $category->{$nameColumn} }}</p>
+                    <a href="{{ route('category.products', ['id' => $category->id]) }}">
+                        <button>VIEW PRODUCTS</button>
                     </a>
                 </div>
             </div>
@@ -47,7 +47,8 @@
         </div>
         <div class="swiper allcard">
             <div class="swiper-wrapper">
-                @foreach ($categories as $category)
+
+                @foreach ($categories->skip(3) as $category)
                     <div class="category-wrapper swiper-slide">
                         <a href="{{ route('category.products', $category->id) }}">
                             <div class="section-item">
@@ -59,6 +60,7 @@
                         </a>
                     </div>
                 @endforeach
+
             </div>
             <div class="swiper-button-prev categories-prev"></div>
             <div class="swiper-button-next categories-next"></div>
@@ -70,7 +72,7 @@
         <div class="container">
             <h2 class="text-center mb-5">{{ __('language.our_products') }}</h2>
             <div class="row g-4 justify-content-center {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}">
-                @foreach ($remainingProducts as $product)
+                @foreach ($products as $product)
                     @php
                         $descriptionColumn = 'description_' . $currentLocale;
                         $productShareUrl = route('product.details', ['id' => $product->id]);

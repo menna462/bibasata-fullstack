@@ -52,16 +52,13 @@
         </div>
     </div>
 
-@php
-    // المنتجات من بعد أول 3 منتجات
-    $remainingProducts = $products->skip(3);
-@endphp
+
 
 <div class="card-shop">
     <div class="container">
         <h2 class="text-center mb-5">Our Products</h2>
         <div class="row g-4 justify-content-center mt-4" id="products">
-            @foreach ($remainingProducts as $product)
+            @foreach ($products as $product)
                 <div class="col-6 col-md-3">
                     <div class="pro-card">
                         {{-- صورة المنتج --}}

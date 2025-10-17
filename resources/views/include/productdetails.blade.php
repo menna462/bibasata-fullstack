@@ -29,12 +29,22 @@
                 </div>
 
                 <h2 class="product-price" id="current-price">
-                    @if ($product->durations->isNotEmpty())
-                        {{ format_price($product->durations->first()) }}
+                    @php
+                        $currency = session('user_currency', 'USD');
+                        $duration = $product->durations->first();
+                    @endphp
+
+                    @if ($duration)
+                        @if ($currency === 'EGP')
+                            {{ number_format($duration->price_egp, 2) }} EGP
+                        @else
+                            {{ number_format($duration->price_usd, 2) }} USD
+                        @endif
                     @else
                         {{ __('language.no_price') }}
                     @endif
                 </h2>
+
 
 
 
@@ -186,7 +196,8 @@
                                                 class="delete-comment-form">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm mt-1 delete"> {{ __('language.delete') }}</button>
+                                                <button type="submit" class="btn btn-sm mt-1 delete">
+                                                    {{ __('language.delete') }}</button>
                                             </form>
                                         @endif
                                     @endauth
@@ -203,16 +214,13 @@
 
     </div>
 
-    @php
-        // المنتجات من بعد أول 3 منتجات
-        $remainingProducts = $products->skip(3);
-    @endphp
+
     <!-- card -->
     <div class="pro-section py-5">
         <div class="container">
             <h2 class="text-center mb-5">{{ __('language.our_products') }}</h2>
             <div class="row g-4 justify-content-center {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }}">
-                @foreach ($remainingProducts as $product)
+                @foreach ($products as $product)
                     @php
                         $descriptionColumn = 'description_' . $currentLocale;
                         $productShareUrl = route('product.details', ['id' => $product->id]);

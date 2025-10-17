@@ -42,7 +42,7 @@ public function store(Request $request)
     if ($request->hasFile('image')) {
         $image = $request->file('image');
         $imageName = time() . '_' . $image->getClientOriginalName();
-        $image->move(public_path('image/products/'), $imageName);
+        $image->move(base_path('image/products/'), $imageName);
     }
 
     Product::create([
@@ -84,14 +84,14 @@ public function store(Request $request)
 
     // تحقق إذا كان فيه صورة جديدة
     if ($request->hasFile('image')) {
-        if (file_exists(public_path('image/products/' . $product->image))) {
-            unlink(public_path('image/products/' . $product->image)); // حذف الصورة القديمة من السيرفر
+        if (file_exists(base_path('image/products/' . $product->image))) {
+            unlink(base_path('image/products/' . $product->image)); // حذف الصورة القديمة من السيرفر
         }
 
         // رفع الصورة الجديدة
         $image = $request->file('image');
         $imageName = time() . '_' . $image->getClientOriginalName();
-        $image->move(public_path('image/products/'), $imageName); // حفظ الصورة في المسار
+        $image->move(base_path('image/products/'), $imageName); // حفظ الصورة في المسار
 
         // تحديث المنتج مع الصورة الجديدة
         $product->update([

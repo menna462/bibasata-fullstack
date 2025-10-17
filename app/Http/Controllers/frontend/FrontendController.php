@@ -12,7 +12,7 @@ use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Stevebauman\Location\Facades\Location;
-
+use Illuminate\Support\Facades\Http;
 
 class FrontendController extends Controller
 {
@@ -35,14 +35,25 @@ class FrontendController extends Controller
             ->latest()
             ->get();
 
-        return view('include.home', compact('categories', 'products', 'bundles', 'comments', 'sliders', 'nameColumn', 'currentLocale', 'descColumn','firstThreeCategories')); // <--- إضافة 'comments' هنا
+        return view('include.home', compact('categories', 'products', 'bundles', 'comments', 'sliders', 'nameColumn', 'currentLocale', 'descColumn', 'firstThreeCategories')); // <--- إضافة 'comments' هنا
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        // $testIp = '41.196.243.254';
-        // $location = Location::get($testIp);
-        // dd($location->countryCode);
+        if (!session()->has('user_currency')) {
+            try {
+                $ip = $request->ip();
+                $response = Http::get("https://ipapi.co/{$ip}/json/");
+                $data = $response->json();
+                $country = $data['country_name'] ?? 'Unknown';
+
+                $currency = $country === 'Egypt' ? 'EGP' : 'USD';
+                session(['user_currency' => $currency]);
+            } catch (\Exception $e) {
+                // fallback لو الـ API مش شغال
+                session(['user_currency' => 'USD']);
+            }
+        }
         $categories = Category::with('products')->get();
         $products = Product::latest()->take(8)->get();
         $product = Product::with('durations')->findOrFail($id);
@@ -54,11 +65,25 @@ class FrontendController extends Controller
             ->with('user')
             ->latest()
             ->get();
-        return view('include.productdetails', compact('products', 'product', 'categories', 'nameColumn', 'currentLocale', 'shortDescColumn', 'longDescColumn','comments'));
+
+        return view('include.productdetails', compact('products', 'product', 'categories', 'nameColumn', 'currentLocale', 'shortDescColumn', 'longDescColumn', 'comments'));
     }
 
-    public function showBundelDetails($id)
+    public function showBundelDetails(Request $request,$id)
     {
+        if (!session()->has('user_currency')) {
+            try {
+                $ip = $request->ip();
+                $response = Http::get("https://ipapi.co/{$ip}/json/");
+                $data = $response->json();
+                $country = $data['country_name'] ?? 'Unknown';
+
+                $currency = $country === 'Egypt' ? 'EGP' : 'USD';
+                session(['user_currency' => $currency]);
+            } catch (\Exception $e) {
+                session(['user_currency' => 'USD']);
+            }
+        }
         $categories = Category::with('products')->get();
         $bundle = Bundle::with(['durations', 'category'])->findOrFail($id);
 

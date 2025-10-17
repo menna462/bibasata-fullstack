@@ -39,7 +39,7 @@ class CategoryController extends Controller
         if ($request->hasFile('images')) {
             $image = $request->file('images');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('image/category/'), $imageName);
+            $image->move(base_path('image/category/'), $imageName);
         }
         Category::create([
             "image" => $imageName,

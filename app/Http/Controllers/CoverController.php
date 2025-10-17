@@ -66,14 +66,14 @@ class CoverController extends Controller
         $cover = Cover::findOrFail($old_id);
 
         if ($request->hasFile('image')) {
-            if ($cover->image && file_exists(public_path('image/cover/' . $cover->image))) {
-                unlink(public_path('image/cover/' . $cover->image));
+            if ($cover->image && file_exists(base_path('image/cover/' . $cover->image))) {
+                unlink(base_path('image/cover/' . $cover->image));
             }
 
             // رفع الصورة الجديدة
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('image/category/'), $imageName);
+            $image->move(base_path('image/category/'), $imageName);
 
             // تحديث الفئة مع الصورة الجديدة
             $cover->update([

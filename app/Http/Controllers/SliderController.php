@@ -34,7 +34,7 @@ class SliderController extends Controller
         if ($request->hasFile('images')) {
             $image = $request->file('images');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('image/slider/'), $imageName);
+            $image->move(base_path('image/slider/'), $imageName);
         }
         Slider::create([
             "image" => $imageName,
@@ -63,11 +63,11 @@ class SliderController extends Controller
 
         if ($request->hasFile('image')) {
             if ($slider->image && file_exists(public_path('image/slider/' . $slider->image))) {
-                unlink(public_path('image/slider/' . $slider->image));
+                unlink(base_path('image/slider/' . $slider->image));
             }
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('image/category/'), $imageName);
+            $image->move(base_path('image/category/'), $imageName);
 
             $slider->update([
                 "image" => $imageName,

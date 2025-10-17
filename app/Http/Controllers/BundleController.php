@@ -50,7 +50,7 @@ class BundleController extends Controller
             foreach ($request->file('images') as $image) {
                 // إضافة uniqid لضمان اسم فريد للصورة
                 $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
-                $image->move(public_path('image/products/'), $imageName);
+                $image->move(base_path('image/products/'), $imageName);
                 $imageNames[] = $imageName;
             }
         }
@@ -122,7 +122,7 @@ class BundleController extends Controller
 
             if (is_array($old_images)) {
                 foreach ($old_images as $old_imageName) {
-                    $filePath = public_path('image/products/' . $old_imageName);
+                    $filePath = base_path('image/products/' . $old_imageName);
                     if (file_exists($filePath)) {
                         unlink($filePath);
                     }
@@ -132,7 +132,7 @@ class BundleController extends Controller
             $newImageNames = [];
             foreach ($request->file('images') as $image) {
                 $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
-                $image->move(public_path('image/products/'), $imageName);
+                $image->move(base_path('image/products/'), $imageName);
                 $newImageNames[] = $imageName;
             }
 

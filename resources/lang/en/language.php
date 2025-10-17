@@ -224,4 +224,6 @@ return [
     'Reviews'=>'Reviews',
     'Description'=>'Description',
     'delete'=>'Delete',
+    'usdmony'=> 'USD Price',
+    'egpmany'=> 'EGP Price'
 ];

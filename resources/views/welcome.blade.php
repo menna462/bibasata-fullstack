@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-{{-- {{ app()->getLocale() === 'ar' ? 'rtl-links' : '' }} --}}
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description"
+        content="Bibasata متجر لبيع المنتجات الرقمية والبرمجيات، يوفر تجربة تسوق سهلة وآمنة باللغتين العربية والإنجليزية. اشترك في النشرة الإخبارية للحصول على أحدث العروض.">
+    <meta name="keywords"
+        content="Bibasata, متجر إلكتروني, برمجيات, برامج, شراء برامج, منتجات رقمية, تطبيقات, شحن دولي, العربية, الإنجليزية">
+    <meta name="author" content="Bibasata">
+    <meta name="robots" content="index, follow">
     <link rel="stylesheet" href="{{ asset('frontend/style.css') }}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
@@ -15,13 +20,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
         integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Almarai:wght@700&display=swap"
+        rel="stylesheet">
+
 
     <title>home</title>
     <style>
@@ -53,6 +58,27 @@
             font-weight: bold;
             line-height: 1;
             z-index: 10;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .popup-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
@@ -178,7 +204,8 @@
                     <li class="nav-item dropdown language-dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="languageDropdownDesktop" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="currency-flag" style="background-image: url('{{ $currentFlagUrl }}');"></span>
+                            <span class="currency-flag"
+                                style="background-image: url('{{ $currentFlagUrl }}');"></span>
                             <i class="fas fa-chevron-down"></i>
                         </a>
 
@@ -206,6 +233,26 @@
                             @endforeach
                         </ul>
                     </li>
+
+                    <li class="nav-item dropdown language-dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdownDesktop"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            💰 {{ session('user_currency', 'USD') }}
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="currencyDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('setCurrency', 'EGP') }}">
+                                    {{ __('language.egpmany') }} </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('setCurrency', 'USD') }}">
+                                    {{ __('language.usdmony') }} </a>
+                            </li>
+                        </ul>
+                    </li>
+
                 </ul>
             </div>
 
@@ -314,12 +361,33 @@
                             @endforeach
                         </ul>
                     </li>
+
+                    <li class="nav-item dropdown language-dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdownDesktop"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            💰 {{ session('user_currency', 'USD') }}
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="currencyDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('setCurrency', 'EGP') }}">
+
+                                    {{ __('language.egpmany') }} </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('setCurrency', 'USD') }}">
+                                    {{ __('language.usdmony') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                 </ul>
             </div>
 
         </div>
     </header>
-
     @yield('content')
 
     <!-- footer -->
@@ -394,10 +462,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
-    <script src="{{ asset('frontend/main.js') }}"></script>
+    <script src="{{ asset('frontend/main.js') }}" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // تحديد جميع الروابط داخل قائمة الفلتر المنسدلة
+
             const filterLinks = document.querySelectorAll('.filter-dropdown-menu .dropdown-item');
 
             filterLinks.forEach(link => {

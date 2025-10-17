@@ -1,5 +1,6 @@
 @extends('welcome')
 @section('content')
+
     <!-- swiper -->
     <div class="swiper mySwiper">
         <div class="swiper-wrapper">
@@ -156,7 +157,7 @@
 
                             <div class="pro-content">
                                 <div class="pro-title">{{ $product->{$nameColumn} }}</div>
-                                <div class="pro-description">{{ $product->{$descriptionColumn} }}</div>
+                                <div class="pro-description">{{ Str::words($product->{$descriptionColumn}, 6, '...') }}</div>
                             </div>
                         </div>
                     </div>

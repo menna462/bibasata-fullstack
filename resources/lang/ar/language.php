@@ -222,4 +222,7 @@ return [
     'Reviews' => 'تعليقات',
     'Description' => 'الوصف',
     'delete' => 'حذف',
+    'usdmony'=> 'دولار ',
+    'egpmany'=> 'جنيه'
+
 ];

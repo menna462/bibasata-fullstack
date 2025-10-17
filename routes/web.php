@@ -168,8 +168,9 @@ Route::group(
                     session(['user_currency' => $currency]);
                 }
                 return redirect()->back();
-            })->name('set.currency');
+            })->name('setCurrency');
         });
+
 
         Route::get('/search', [FrontendController::class, 'search'])->name('frontend.search');
         Route::get('/live-search', [FrontendController::class, 'liveSearch'])->name('live.search');

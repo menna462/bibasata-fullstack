@@ -91,7 +91,7 @@
             </button>
             <div class="center-img">
                 <a href="{{ url('/') }}">
-                    <img src="{{ asset('frontend/image/logo1.png') }}" alt="logo" />
+                    <img src="{{ asset('frontend/image/BIBASATA-09.png') }}" alt="logo" />
                 </a>
             </div>
 
@@ -395,7 +395,7 @@
         <div class="footer-container">
             {{-- Social Media --}}
             <div class="footer-section social-media">
-                <img src="{{ asset('frontend/image/7.png') }}" alt="Bibasata Logo" class="logo" />
+                <img src="{{ asset('frontend/image/BIBASATA-09.png') }}" alt="Bibasata Logo" class="logo" />
                 <h3>{{ __('language.Social_Media') }}</h3>
                 <div class="social-icons">
                     <a href="https://www.facebook.com/BibasataSoftAi"><i class="fab fa-facebook-f"></i></a>

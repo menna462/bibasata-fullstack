@@ -142,6 +142,14 @@ Route::group(
             return view('include.conditions');
         })->name('conditions');
 
+        Route::get('/refund-policy', function () {
+            return view('include.refund');
+        })->name('refund-policy');
+
+        Route::get('/privacy-policy', function () {
+            return view('include.privacy');
+        })->name('privacy-policy');
+
         Route::get('/category/{id}', [FrontendCategoryController::class, 'show'])->name('category.products');
         Route::get('/product/{id}', [FrontendController::class, 'show'])->name('product.details');
         Route::get('/bundle/{id}', [FrontendController::class, 'showBundelDetails'])->name('bundle.details');
@@ -163,15 +171,15 @@ Route::group(
             Route::delete('/cart/{durationPriceId}', [CartController::class, 'remove'])->name('cart.remove'); // Changed parameter name
             Route::get('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
             Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-            Route::get('/set-currency/{currency}', function ($currency) {
+
+        });
+
+        Route::get('/set-currency/{currency}', function ($currency) {
                 if (in_array($currency, ['USD', 'EGP'])) {
                     session(['user_currency' => $currency]);
                 }
                 return redirect()->back();
             })->name('setCurrency');
-        });
-
-
         Route::get('/search', [FrontendController::class, 'search'])->name('frontend.search');
         Route::get('/live-search', [FrontendController::class, 'liveSearch'])->name('live.search');
         require __DIR__ . '/auth.php';

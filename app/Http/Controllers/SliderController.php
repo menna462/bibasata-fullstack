@@ -7,54 +7,45 @@ use Illuminate\Http\Request;
 
 class SliderController extends Controller
 {
-        public function index()
+    public function index()
     {
         $slider = Slider::all();
         return view('backend.slider', compact('slider'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view("backend.slider.create");
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'images' => 'required|image|mimes:jpeg,png,jpg',
         ]);
+
         $imageName = null;
 
         if ($request->hasFile('images')) {
             $image = $request->file('images');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(base_path('image/slider/'), $imageName);
+
+            // ✅ نحفظ الصورة داخل مجلد public/image/slider/
+            $image->move($_SERVER['DOCUMENT_ROOT'] . '/image/slider/', $imageName);
         }
+
         Slider::create([
             "image" => $imageName,
         ]);
-        return redirect()->route("slider")->with("message", "Creeted successfully");
+
+        return redirect()->route("slider")->with("message", "Created successfully");
     }
-
-
-    public function show( )
-    {
-        //
-    }
-
 
     public function edit(string $id)
     {
         $slider = Slider::findOrFail($id);
-        return view('backend.categories.edit', ["result" => $slider]);
+        return view('backend.slider.edit', ["result" => $slider]);
     }
-
 
     public function update(Request $request)
     {
@@ -62,26 +53,35 @@ class SliderController extends Controller
         $slider = Slider::findOrFail($old_id);
 
         if ($request->hasFile('image')) {
-            if ($slider->image && file_exists(public_path('image/slider/' . $slider->image))) {
-                unlink(base_path('image/slider/' . $slider->image));
+            // ✅ حذف الصورة القديمة
+            if ($slider->image && file_exists($_SERVER['DOCUMENT_ROOT'] . '/image/slider/' . $slider->image)) {
+                unlink($_SERVER['DOCUMENT_ROOT'] . '/image/slider/' . $slider->image);
             }
+
+            // ✅ رفع الصورة الجديدة في نفس المسار
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(base_path('image/category/'), $imageName);
+            $image->move($_SERVER['DOCUMENT_ROOT'] . '/image/slider/', $imageName);
 
             $slider->update([
                 "image" => $imageName,
             ]);
         }
 
-
-        return redirect()->route("slider")->with("message", "updated successfuly");
+        return redirect()->route("slider")->with("message", "Updated successfully");
     }
 
     public function destroy(string $id)
     {
         $slider = Slider::findOrFail($id);
+
+        // ✅ نحذف الصورة من السيرفر قبل حذف السجل
+        if ($slider->image && file_exists($_SERVER['DOCUMENT_ROOT'] . '/image/slider/' . $slider->image)) {
+            unlink($_SERVER['DOCUMENT_ROOT'] . '/image/slider/' . $slider->image);
+        }
+
         $slider->delete();
+
         return redirect()->route("slider")->with("message", "Deleted successfully");
     }
 }

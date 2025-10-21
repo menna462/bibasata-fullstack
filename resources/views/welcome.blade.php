@@ -11,7 +11,8 @@
         content="Bibasata, متجر إلكتروني, برمجيات, برامج, شراء برامج, منتجات رقمية, تطبيقات, شحن دولي, العربية, الإنجليزية">
     <meta name="author" content="Bibasata">
     <meta name="robots" content="index, follow">
-    <link rel="stylesheet" href="{{ asset('frontend/style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('frontend/style.css?v=2') }}" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
@@ -28,7 +29,7 @@
         rel="stylesheet">
 
 
-    <title>home</title>
+    <title>Bibasata</title>
     <style>
         .icon-link {
             display: inline-block;
@@ -154,28 +155,24 @@
 
                     {{-- أيقونة المفضلة (العداد يظهر فقط للمسجلين) --}}
                     <li>
-                        <a href="{{ route('favorites') }}" class="icon-link position-relative"
-                            id="favorites-count-link">
-                            <i class="fa-regular fa-heart fa-lg" aria-hidden="true"></i>
+                      <a href="{{ route('favorites') }}" class="icon-link position-relative" id="favorites-count-link">
+                        <i class="fa-regular fa-heart fa-lg" aria-hidden="true"></i>
 
-                            @php
-                                $favoritesCount = 0;
-                                if (Auth::check()) {
-                                    // للمسجلين: العدد من قاعدة البيانات
-                                    $favoritesCount = Auth::user()->allFavorites()->count();
-                                } else {
-                                    // للضيوف: العدد من الجلسة
-                                    // يتم حفظ المفضلة كـ [key => item_details] لذا نستخدم count
-                                    $favoritesCount = count(session('guest_favorites', []));
-                                }
-                            @endphp
+                        @php
+                            // العدد للمسجلين
+                            if (Auth::check()) {
+                                $favoritesCount = Auth::user()->allFavorites()->count();
+                            } else {
+                                // العدد للضيوف من الجلسة
+                                $favoritesCount = count(session('guest_favorites', []));
+                            }
+                        @endphp
 
-                            @if ($favoritesCount > 0)
-                                {{-- هذا العنصر هو الذي يبحث عنه الجافاسكريبت لتحديثه --}}
-                                <span class="badge" id="favorites-count-badge">{{ $favoritesCount }}</span>
-                            @endif
-                        </a>
+                        {{-- ✅ نعرض الـ badge دايمًا حتى لو العدد صفر --}}
+                        <span class="badge" id="favorites-count-badge">{{ $favoritesCount }}</span>
+                      </a>
                     </li>
+
                     <li>
                         <a href="{{ route('cart') }}" class="icon-link position-relative">
                             <i class="fa-solid fa-cart-shopping"></i>
@@ -416,6 +413,8 @@
                     <li><a href="{{ url('/about') }}">{{ __('language.About') }}</a></li>
                     <li><a href="{{ url('/contact') }}">{{ __('language.Contact') }}</a></li>
                     <li><a href="{{ url('/conditions') }}">{{ __('language.Term') }}</a></li>
+                    <li><a href="{{ url('/refund-policy') }}">{{ __('language.Refund') }}</a></li>
+                    <li><a href="{{ url('/privacy-policy') }}">{{ __('language.Privacy') }}</a></li>
                 </ul>
             </div>
 
@@ -462,7 +461,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
-    <script src="{{ asset('frontend/main.js') }}" defer></script>
+    <script src="{{ asset('frontend/main.js?v=2') }}" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 

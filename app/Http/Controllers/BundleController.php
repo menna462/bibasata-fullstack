@@ -32,9 +32,8 @@ class BundleController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            // 'category_id' => 'required|exists:categories,id',
             'images' => 'required|array', // يجب أن يكون حقل الصور مصفوفة
-            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048', // قواعد التحقق لكل صورة (2MB كحد أقصى)
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048', // لكل صورة 2MB كحد أقصى
             'name_en' => 'required|string',
             'name_ar' => 'required|string',
             'short_description_en' => 'required|string',
@@ -48,15 +47,15 @@ class BundleController extends Controller
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                // إضافة uniqid لضمان اسم فريد للصورة
                 $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
-                $image->move(base_path('image/products/'), $imageName);
+                // ✅ حفظ الصورة في مجلد يمكن الوصول إليه على هوستنجر
+                $image->move($_SERVER['DOCUMENT_ROOT'] . '/image/products/', $imageName);
                 $imageNames[] = $imageName;
             }
         }
 
         Bundle::create([
-            "image" => $imageNames, // سيتم تحويل هذه المصفوفة إلى JSON تلقائيًا بفضل الـ $casts
+            "image" => $imageNames, // Laravel هيحول المصفوفة JSON
             "name_en" => $request->name_en,
             "name_ar" => $request->name_ar,
             "short_description_en" => $request->short_description_en,
@@ -118,21 +117,22 @@ class BundleController extends Controller
         ];
 
         if ($request->hasFile('images')) {
-            $old_images = $bundel->image; // ستكون مصفوفة بفضل الـ $casts
-
+            // ✅ حذف الصور القديمة
+            $old_images = $bundel->image;
             if (is_array($old_images)) {
                 foreach ($old_images as $old_imageName) {
-                    $filePath = base_path('image/products/' . $old_imageName);
+                    $filePath = $_SERVER['DOCUMENT_ROOT'] . '/image/products/' . $old_imageName;
                     if (file_exists($filePath)) {
                         unlink($filePath);
                     }
                 }
             }
 
+            // ✅ رفع الصور الجديدة
             $newImageNames = [];
             foreach ($request->file('images') as $image) {
                 $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
-                $image->move(base_path('image/products/'), $imageName);
+                $image->move($_SERVER['DOCUMENT_ROOT'] . '/image/products/', $imageName);
                 $newImageNames[] = $imageName;
             }
 
@@ -141,7 +141,7 @@ class BundleController extends Controller
 
         $bundel->update($updateData);
 
-        return redirect()->route("bundel")->with("message", "updated successfuly");
+        return redirect()->route("bundel")->with("message", "Updated successfully");
     }
 
     /**

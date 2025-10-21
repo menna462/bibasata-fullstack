@@ -124,38 +124,18 @@ return [
                     'Prices are clearly displayed on the website and may be updated at any time without prior notice, without affecting previously confirmed orders.',
                 ],
             ],
-            'privacy_policy' => [
-                'title' => '3. Privacy Policy',
-                'list' => [
-                    'We are committed to protecting our customers’ privacy and safeguarding their personal data.',
-                    'Customer data will never be shared with third parties without explicit consent, unless required by law.',
-                    'Login credentials are only used to allow customers to benefit from the service.',
-                    'For shared subscriptions: customers cannot change the email or password to ensure account security and privacy.',
-                    'For private subscriptions: customers may change the email or password depending on the type of service.',
-                ],
-            ],
+
             'fast_delivery' => [
-                'title' => '4. Fast Delivery',
+                'title' => '3. Fast Delivery',
                 'list' => [
                     'Most accounts are delivered within a few minutes after the order is placed.',
                     'Certain subscriptions or specific services may take up to 24 hours maximum, depending on the type of service.',
                     'If delivery is delayed beyond the mentioned timeframe, the customer has the right to contact support for follow-up.',
                 ],
             ],
-            'refund_policy' => [
-                'title' => '5. Cancellation & Refund Policy',
-                'list' => [
-                    'Customers may cancel their subscription and request a refund if no more than 24 hours have passed since the service was activated.',
-                    'After this period, cancellations and refunds are only accepted if a major service issue is proven.',
-                    'Approved refunds will be issued via the same payment method within a reasonable timeframe.',
-                ],
-            ],
-            'service_interruptions' => [
-                'title' => '6. Service Interruptions',
-                'text' => 'We are committed to resolving any service issue within minutes of receiving a report. If the problem is caused by the original provider, resolution may take 24–48 hours, and customers will be compensated for the lost time.',
-            ],
+
             'renewal' => [
-                'title' => '7. Renewal',
+                'title' => '4. Renewal',
                 'list' => [
                     'A reminder email will be sent before the subscription expires.',
                     'Renewal will only occur if requested by the customer, ensuring no unwanted charges.',
@@ -163,7 +143,7 @@ return [
                 ],
             ],
             'access_policy' => [
-                'title' => '8. Access Policy',
+                'title' => '5. Access Policy',
                 'list' => [
                     'Shared accounts can be used from anywhere in the world with internet access.',
                     'Login details cannot be used on more devices than agreed upon at the time of purchase.',
@@ -172,21 +152,18 @@ return [
                 ],
             ],
             'payment_methods' => [
-                'title' => '9. Payment Methods',
+                'title' => '6. Payment Methods',
                 'text' => 'We accept e-wallets, InstaPay, Vodafone Cash, credit cards, debit cards, PayPal, and cryptocurrencies. All payments are processed securely through trusted gateways.',
             ],
             'support' => [
-                'title' => '10. Technical Support',
+                'title' => '7. Technical Support',
                 'text' => 'Our support team is available via email and live chat to answer inquiries and resolve issues. We are committed to providing fast and professional responses to ensure customer satisfaction.',
             ],
             'amendments' => [
-                'title' => '11. Amendments',
+                'title' => '8. Amendments',
                 'text' => 'Bebasata reserves the right to update or amend these Terms & Conditions at any time. Changes take effect immediately once published on the website. Continued use of the site constitutes acceptance of the updated terms.',
             ],
-            'contact' => [
-                'title' => '12. Contact Us',
-                'text' => "You can reach the Bebasata team through the following channels:\n- Official email\n- Our verified Facebook page\n- Our verified Instagram page\n- Official WhatsApp number for customer service",
-            ],
+
         ],
 
         'features' => [
@@ -195,6 +172,29 @@ return [
             ['title' => 'Exclusive Deals', 'desc' => 'Special discounts for you'],
             ['title' => '24 / 7 Support', 'desc' => 'Dedicated support'],
         ],
+    ],
+    'privacy_policy' => [
+        'title' => '3. Privacy Policy',
+        'list' => [
+            'We are committed to protecting our customers’ privacy and safeguarding their personal data.',
+            'Customer data will never be shared with third parties without explicit consent, unless required by law.',
+            'Login credentials are only used to allow customers to benefit from the service.',
+            'For shared subscriptions: customers cannot change the email or password to ensure account security and privacy.',
+            'For private subscriptions: customers may change the email or password depending on the type of service.',
+        ],
+    ],
+
+    'refund_policy' => [
+        'title' => ' Cancellation & Refund Policy',
+        'list' => [
+            'Customers may cancel their subscription and request a refund if no more than 24 hours have passed since the service was activated.',
+            'After this period, cancellations and refunds are only accepted if a major service issue is proven.',
+            'Approved refunds will be issued via the same payment method within a reasonable timeframe.',
+        ],
+    ],
+    'service_interruptions' => [
+        'title' => ' Service Interruptions',
+        'text' => 'We are committed to resolving any service issue within minutes of receiving a report. If the problem is caused by the original provider, resolution may take 24–48 hours, and customers will be compensated for the lost time.',
     ],
     'title_error' => 'Error',
     'maintenance_title' => 'The website is under development and maintenance',
@@ -220,10 +220,12 @@ return [
     'bundle_code' => 'Bundle Code',
     'category' => 'Category',
     'Term' => 'Terms & Conditions',
-    'copy'=> 'Copy Link',
-    'Reviews'=>'Reviews',
-    'Description'=>'Description',
-    'delete'=>'Delete',
-    'usdmony'=> 'USD Price',
-    'egpmany'=> 'EGP Price'
+    'copy' => 'Copy Link',
+    'Reviews' => 'Reviews',
+    'Description' => 'Description',
+    'delete' => 'Delete',
+    'usdmony' => 'USD Price',
+    'egpmany' => 'EGP Price',
+    'Refund' => 'Refund Policy',
+    'Privacy' => 'Privacy Policy',
 ];

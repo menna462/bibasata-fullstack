@@ -381,6 +381,7 @@ direction: rtl;
     .menu-btn {
         order: 2;
         margin-right: 11px;
+        color: #fff;
     }
     .right-nav {
         display: none !important;
@@ -516,7 +517,7 @@ button {
 .mySwiper .call-to-action-button {
     position: absolute;
     bottom: 30px; /* خليه قريب من تحت */
-    left: 79%;
+    left: 50%;
     transform: translateX(-50%);
     background: #004d1a;
     color: #fff;
@@ -1240,8 +1241,8 @@ footer {
     /* border-radius: 50%; */
     background: #ffffff;
     color: #080808;
-    width: 40px;
-    height: 40px;
+     width: 27px;
+    height: 27px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -1265,6 +1266,7 @@ footer {
         align-items: center;
         justify-content: space-between;
         text-align: center;
+        height: 320px;
     }
 
     .slide-content {
@@ -1284,11 +1286,11 @@ footer {
     }
 
     .large-image img {
-        max-width: 80%;
+        max-width: 100%;
         height: auto;
     }
     .slide-title {
-        font-size: 30px;
+    font-size: 21px;
     }
     .slide-desc {
         font-size: 13px;

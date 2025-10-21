@@ -27,19 +27,24 @@ class CoverController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'images' => 'required|image|mimes:jpeg,png,jpg',
+            'images' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
+
         $imageName = null;
 
         if ($request->hasFile('images')) {
             $image = $request->file('images');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('image/cover/'), $imageName);
+
+            // ✅ نحفظ الصورة داخل مجلد يمكن الوصول إليه من الدومين
+            $image->move($_SERVER['DOCUMENT_ROOT'] . '/image/cover/', $imageName);
         }
+
         Cover::create([
             "image" => $imageName,
         ]);
-        return redirect()->route("cover")->with("message", "Creeted successfully");
+
+        return redirect()->route("cover")->with("message", "Created successfully");
     }
 
     /**
@@ -49,7 +54,6 @@ class CoverController extends Controller
     {
         //
     }
-
 
     public function edit(string $id)
     {
@@ -66,29 +70,38 @@ class CoverController extends Controller
         $cover = Cover::findOrFail($old_id);
 
         if ($request->hasFile('image')) {
-            if ($cover->image && file_exists(base_path('image/cover/' . $cover->image))) {
-                unlink(base_path('image/cover/' . $cover->image));
+            // ✅ نحذف الصورة القديمة لو موجودة
+            $oldImagePath = $_SERVER['DOCUMENT_ROOT'] . '/image/cover/' . $cover->image;
+            if ($cover->image && file_exists($oldImagePath)) {
+                unlink($oldImagePath);
             }
 
-            // رفع الصورة الجديدة
+            // ✅ نرفع الصورة الجديدة
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(base_path('image/category/'), $imageName);
+            $image->move($_SERVER['DOCUMENT_ROOT'] . '/image/cover/', $imageName);
 
-            // تحديث الفئة مع الصورة الجديدة
+            // ✅ نحدث الداتا
             $cover->update([
                 "image" => $imageName,
             ]);
         }
 
-
-        return redirect()->route("cover")->with("message", "updated successfuly");
+        return redirect()->route("cover")->with("message", "Updated successfully");
     }
 
     public function destroy(string $id)
     {
         $cover = Cover::findOrFail($id);
+
+        // ✅ نحذف الصورة من السيرفر
+        $oldImagePath = $_SERVER['DOCUMENT_ROOT'] . '/image/cover/' . $cover->image;
+        if ($cover->image && file_exists($oldImagePath)) {
+            unlink($oldImagePath);
+        }
+
         $cover->delete();
+
         return redirect()->route("cover")->with("message", "Deleted successfully");
     }
 }

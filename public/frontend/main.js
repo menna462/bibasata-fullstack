@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
         spaceBetween: 10,
         navigation: { nextEl: ".categories-next", prevEl: ".categories-prev" },
         breakpoints: {
-            0: { slidesPerView: 4 },
+            0: { slidesPerView: 3 },
             401: { slidesPerView: 3 },
             1025: { slidesPerView: 5 },
         },
@@ -57,6 +57,8 @@ document.addEventListener("DOMContentLoaded", function () {
             slideShadows: true,
         },
         pagination: { el: ".reviews-pagination", clickable: true },
+        autoplay: { delay: 3000, disableOnInteraction: false },
+
     });
 
     if (window.reviewsSwiper) {
